@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealVerse - Login </title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="container" id="login-container">
+        <h2>Login</h2>
+        <div class="input-group">
+            <select id="user-type">
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <input type="email" placeholder="Email" required>
+        </div>
+        <div class="input-group">
+            <input type="password" placeholder="Password" required>
+        </div>
+        <button onclick="login()">Login</button>
+        <span class="toggle-link" onclick="toggleForm()">Don't have an account? Sign up</span>
+    </div>
+
+    <div class="container" id="register-container" style="display:none;">
+        <h2>Register</h2>
+        <div class="input-group">
+            <select id="register-user-type">
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <input type="text" placeholder="Full Name" required>
+        </div>
+        <div class="input-group">
+            <input type="email" placeholder="Email" required>
+        </div>
+        <div class="input-group">
+            <input type="password" placeholder="Password" required>
+        </div>
+        <button onclick="register()">Register</button>
+        <span class="toggle-link" onclick="toggleForm()">Already have an account? Login</span>
+    </div>
+
+    <script>
+        function toggleForm() {
+            let loginContainer = document.getElementById('login-container');
+            let registerContainer = document.getElementById('register-container');
+            if (loginContainer.style.display === 'none') {
+                loginContainer.style.display = 'block';
+                registerContainer.style.display = 'none';
+            } else {
+                loginContainer.style.display = 'none';
+                registerContainer.style.display = 'block';
+            }
+        }
+
+        function login() {
+            alert('Login function to be implemented');
+        }
+
+        function register() {
+            alert('Register function to be implemented');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+/* General Reset and Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #d0e1d4;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Landing Page Styling */
+.landingpg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 120px 60px 80px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-out forwards;
+    background-color: #d0e1d4
+}
+
+.content {
+    font-size: 32px;
+    color: #566129;
+}
+
+.getStartedBtn {
+    background-color: #566129;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 18px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+.getStartedBtn:hover {
+    background-color: #3a421b;
+    transform: scale(1.05);
+}
+
+.image {
+    max-width: 40%;
+    border-radius: 10px;
+}
+
+/* Services Section */
+.services {
+    background-color: #fff;
+    padding: 80px 60px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+}
+
+.serviceContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.serviceBox {
+    background-color: #d0e1d4;
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.8s forwards;
+}
+
+.serviceBox:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Testimonials Section */
+.testimonials {
+    background-color: #566129;
+    color: #d0e1d4;
+    padding: 80px 60px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease-out 1s forwards;
+}
+
+.testimonialContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.testimonial {
+    background-color: rgba(208, 225, 212, 0.2);
+    padding: 25px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 1.2s forwards;
+}
+
+.testimonial:hover {
+    transform: scale(1.05);
+}
+
+/* Contact Section */
+.contact {
+    background-color: #fff;
+    padding: 80px 60px;
+    text-align: center;
+}
+
+form {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #566129;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: #d0e1d4;
+}
+
+textarea {
+    height: 80px;
+    resize: none;
+}
+
+button {
+    background-color: #566129;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #3a421b;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.firstHeading{
+    display: block;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
+.servicesHeadings{
+    font-weight: bold;
+    font-size: 1.5em;
+
+}
