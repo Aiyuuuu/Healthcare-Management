@@ -1,0 +1,43 @@
+
+.container {
+    justify-self: center;
+    margin: 6% 0px 20% 0px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+h2 {
+    color: #566129;
+}
+.input-group {
+    margin: 10px 0;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button {
+    background-color: #566129;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+button:hover {
+    background-color: #475322;
+}
+.toggle-link {
+    color: #566129;
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+}

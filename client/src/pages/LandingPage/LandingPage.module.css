@@ -1,18 +1,4 @@
-/* General Reset and Styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
-}
 
-body {
-    background-color: #d0e1d4;
-    overflow-x: hidden;
-    line-height: 1.6;
-}
-
-/* Landing Page Styling */
 .landingpg {
     display: flex;
     align-items: center;

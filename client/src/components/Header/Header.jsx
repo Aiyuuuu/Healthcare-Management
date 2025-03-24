@@ -1,15 +1,15 @@
-import React from "react";
 import styles from "./header.module.css";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <header className={styles.header}>
-      <a href="indexproject.html" className={styles.logo}>
+      <Link to="/" className={styles.logo}>
         HealVerse
-      </a>
+      </Link>
       <ul className={styles.navbar}>
         <li>
-          <a href="#home">Home</a>
+          <Link to="/">Home</Link>
         </li>
         <li>
           <a href="#services">Services</a>
@@ -21,9 +21,9 @@ const Header = () => {
           <a href="#contact">Contact</a>
         </li>
         <li>
-          <a href="login.html" className={styles.btn}>
+          <Link to="/Login" className={styles.btn}>
             Login
-          </a>
+          </Link>
         </li>
       </ul>
     </header>

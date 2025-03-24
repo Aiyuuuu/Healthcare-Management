@@ -2,7 +2,7 @@ import styles from './LandingPage.module.css';
 
 const LandingPage = () => {
     return (
-        <div>
+        <div className={`${styles.pageContainer}`}>
             <section id="home" className={styles.landingpg}>
                 <div className={styles.content}>
                     <h1 className={styles.firstHeading}>Your Health, Our Priority</h1>
