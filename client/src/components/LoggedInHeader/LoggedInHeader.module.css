@@ -79,28 +79,16 @@
 
 
 
-
-
-
-
-
-
-
-
 @keyframes dropdownAnimation {
     0% {
         opacity: 0;
-        transform: translateY(-50px) scale(0.95);
+        transform: translateY(-20px) scale(0.95);
     }
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
 }
-
-
-
-
 
 
 
@@ -120,7 +108,6 @@
     padding: 10px 0;
     z-index: 1000;
     animation: dropdownAnimation 0.1s ease-out;
-    
 }
 
 
@@ -155,3 +142,17 @@
 
 
 
+.themeToggle {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+    margin: 0px;
+}
+
+/* .themeToggle:hover {
+    opacity: 0.8;
+} */
