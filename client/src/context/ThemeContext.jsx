@@ -4,25 +4,34 @@ import { enable, disable } from "darkreader";
 const ThemeContext = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
-    const [isDark, setIsDark] = useState(() => 
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
+    const [isDark, setIsDark] = useState(() => {
+        return localStorage.getItem("theme") === "dark" ||
+            (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    });
     const [isReady, setIsReady] = useState(false);
 
+    // Apply the theme instantly on mount
     useEffect(() => {
+        document.documentElement.classList.toggle("dark", isDark);
+        document.documentElement.classList.toggle("light", !isDark);
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+
         if (isDark) {
             enable({ brightness: 100, contrast: 90, sepia: 10 });
         } else {
             disable();
         }
-        setIsReady(true); // Mark theme as applied
+
+        setTimeout(() => setIsReady(true), 50); // Small delay to prevent flashing
     }, [isDark]);
 
     const value = useMemo(() => ({ isDark, setIsDark }), [isDark]);
 
-    if (!isReady) return null; // Prevent rendering until DarkReader is applied
-
-    return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+    return (
+        <ThemeContext.Provider value={value}>
+            {isReady ? children : null}
+        </ThemeContext.Provider>
+    );
 };
 
 export default ThemeContext;

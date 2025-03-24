@@ -1,7 +1,9 @@
 import styles from "./header.module.css";
 import { Link } from "react-router-dom";
+import useThemeContext from "../../hooks/useThemeContext"; 
 
 const Header = () => {
+  const { isDark, setIsDark } = useThemeContext(); 
   return (
     <header className={styles.header}>
       <Link to="/" className={styles.logo}>
@@ -15,7 +17,7 @@ const Header = () => {
           <a href="#services">Services</a>
         </li>
         <li>
-          <a href="#doctors.html">Our Doctors</a>
+          <Link to="/SpecialistCategory">Find Doctors</Link>
         </li>
         <li>
           <a href="#contact">Contact</a>
@@ -25,9 +27,15 @@ const Header = () => {
             Login
           </Link>
         </li>
+        <li>
+          <button className={styles.themeToggle} onClick={() => setIsDark(!isDark)}>
+            {isDark ? "☀️" : "🌙"}
+          </button>
+        </li>
       </ul>
     </header>
   );
 };
 
 export default Header;
+

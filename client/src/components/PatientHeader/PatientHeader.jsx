@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuthContext";
 import useThemeContext from "../../hooks/useThemeContext"; // ✅ Import theme context
-import styles from "./LoggedInHeader.module.css";
+import styles from "./patientHeader.module.css";
 
 const Header = () => {
     const { user, logout } = useAuth() || {};
@@ -18,10 +18,9 @@ const Header = () => {
             <ul className={styles.navbar}>
                 <li><Link to="/">Home</Link></li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#doctors.html">Our Doctors</a></li>
+                <li><Link to="/SpecialistCategory">Find Doctors</Link></li>
                 <li><a href="#contact">Contact</a></li>
-                
-                
+
 
                 {/* Dropdown */}
                 <li className={styles.dropdownContainer}>
@@ -64,3 +63,4 @@ const Header = () => {
 };
 
 export default Header;
+

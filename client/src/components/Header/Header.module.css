@@ -5,9 +5,9 @@
     justify-content: space-between;
     padding: 15px 60px;
     background-color: rgba(255, 255, 255, 0.9);
-    /* position: fixed;  */
+    position: fixed; 
     width: 100%;
-    /* top: 0; */
+    top: 0;
     z-index: 1000; /* Ensures it stays above other content */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -29,6 +29,7 @@
 .navbar {
     list-style: none;
     display: flex;
+    align-items: center;
     gap: 40px;
     padding: 0;
     margin: 0;
@@ -67,4 +68,17 @@
 .btn:hover {
     background-color: #566129;
     color: #fff;
+}
+
+
+
+.themeToggle {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+    margin: 0px;
 }
