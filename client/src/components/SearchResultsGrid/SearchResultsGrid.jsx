@@ -2,14 +2,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import styles from "./SearchResultsGrid.module.css";
 import { useNavigate } from "react-router-dom";
 
-function SearchResultsGrid({ rows }) {
+function SearchResultsGrid({ searchResults }) {
   const navigate = useNavigate();
   // Dummy data for DataGrid
   const columns = [
     {
       field: "name",
       headerName: "Doctor Name",
-      width: 200,
+      width: 250,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
@@ -42,15 +42,24 @@ function SearchResultsGrid({ rows }) {
       disableColumnMenu: true,
       renderCell: (params) => (params.value ? "✔ High" : "❌ Low"),
     },
+    {
+      field: "hospitalAddress",
+      headerName: "Hospital Address",
+      width: 500,
+      headerClassName: styles.headers,
+      disableColumnMenu: true,
+      sortable:false
+    },
   ];
 
   return (
     <div className={`mt-4 ${styles.SearchResultsGridContainer}`} >
       <DataGrid
-        rows={rows}
+        rows={searchResults}
         columns={columns}
         pagination // Enables pagination
         paginationMode="client"
+        pageSizeOptions={[15]}
         initialState={{
           pagination: {
             paginationModel: { pageSize: 15 }, // Force default page size to 10
@@ -67,15 +76,23 @@ function SearchResultsGrid({ rows }) {
             alignItems: "center",
             border:"3px solid #566129",
             marginBottom:"6px",
-            borderRadius: "6px"
+            borderRadius: "6px",
           },
-          "&:hover": {
+          "& .MuiDataGrid-row:hover": {
             backgroundColor: "#A8B88E", // Slightly darker on hover
           },
           "& .MuiDataGrid-cell": {
             color: "#000", // Text color
             fontWeight: "bold", // Bold text
             borderRight: "0px solid #ddd", // Right border for separation
+            textAlign:"center"
+          },
+          "& .MuiDataGrid-cell[data-field='name']": {
+            textAlign:"left"
+          },
+          "& .MuiDataGrid-cell[data-field='hospitalAddress']": {
+            textAlign:"left",
+            marginLeft:"10px"
           },
           "& .MuiCheckbox-root": {
             color: "#007bff",
