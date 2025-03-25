@@ -3,9 +3,12 @@
     margin-top: 100px;
     display: block;
     text-align: center;
+    background-color: #D0E1D4;
+    padding: 20px;
 
 }
 
-h1{
+.heading{
     color:#566129;
 }
+

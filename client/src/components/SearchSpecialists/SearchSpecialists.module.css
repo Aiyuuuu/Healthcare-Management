@@ -1,0 +1,19 @@
+
+.searchComponent {
+    display: flex;
+    font-size: 1em;
+    justify-content: space-around;
+}
+
+.searchComponent select{
+    font-size: 1em;
+
+}
+
+.checkInput{
+    margin-top: 0.8em;
+}
+
+.searchButton{
+    margin-top: 5px ;
+}
