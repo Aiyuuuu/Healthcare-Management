@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from './SearchSpecialists.module.css'
 
 
-function Search({formattedName}) {
+function Search({formattedSpecializationName}) {
     const [searchInput, setSearchInput] = useState("");
     const [filters, setFilters] = useState({
       city: "",
@@ -37,7 +37,7 @@ function Search({formattedName}) {
               <input
                 type="text"
                 className="form-control"
-                placeholder={`Search ${formattedName} by name or keyword`}
+                placeholder={`Search ${formattedSpecializationName} by name or keyword`}
                 value={searchInput}
                 onChange={handleInputChange}
               />
@@ -101,3 +101,4 @@ function Search({formattedName}) {
 }
 
 export default Search
+

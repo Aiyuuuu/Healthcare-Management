@@ -1,39 +1,94 @@
-// import styles from "./SearchResultsGrid.module.css";
 import { DataGrid } from "@mui/x-data-grid";
-import styles from './SearchResultsGrid.module.css'
+import styles from "./SearchResultsGrid.module.css";
+import { useNavigate } from "react-router-dom";
 
-function SearchResultsGrid({rows}) {
+function SearchResultsGrid({ rows }) {
+  const navigate = useNavigate();
   // Dummy data for DataGrid
   const columns = [
-    { field: "name", headerName: "Doctor Name", width: 200, headerClassName: styles.headers },
-    { field: "city", headerName: "City", width: 150, headerClassName: styles.headers },
-    { field: "experience", headerName: "Experience (years)", width: 180, headerClassName: styles.headers },
-    { field: "fee", headerName: "Fee (PKR)", width: 150, headerClassName: styles.headers },
+    {
+      field: "name",
+      headerName: "Doctor Name",
+      width: 200,
+      headerClassName: styles.headers,
+      disableColumnMenu: true,
+    },
+    {
+      field: "city",
+      headerName: "City",
+      width: 150,
+      headerClassName: styles.headers,
+      disableColumnMenu: true,
+    },
+    {
+      field: "experience",
+      headerName: "Experience (years)",
+      width: 180,
+      headerClassName: styles.headers,
+      disableColumnMenu: true,
+    },
+    {
+      field: "fee",
+      headerName: "Fee (PKR)",
+      width: 150,
+      headerClassName: styles.headers,
+      disableColumnMenu: true,
+    },
     {
       field: "satisfaction",
       headerName: "Satisfaction Rate",
       width: 180,
       headerClassName: styles.headers,
+      disableColumnMenu: true,
       renderCell: (params) => (params.value ? "✔ High" : "❌ Low"),
     },
   ];
-  
-  
+
   return (
-    <div className="mt-4">
+    <div className={`mt-4 ${styles.SearchResultsGridContainer}`} >
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10]}
+        pagination // Enables pagination
+        paginationMode="client"
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 15 }, // Force default page size to 10
+          },
+        }}
         disableSelectionOnClick
+        disableColumnSelector
+        disableRowSelectionOnClick
+        onRowClick={(params) => navigate(`/specialistProfile/${params.row.id}`)}
         sx={{
           "& .MuiDataGrid-row": {
-            backgroundColor: "#566022",
+            backgroundColor: "#C7CD98",
+            cursor: "pointer",
+            alignItems: "center",
+            border:"3px solid #566129",
+            marginBottom:"6px",
+            borderRadius: "6px"
+          },
+          "&:hover": {
+            backgroundColor: "#A8B88E", // Slightly darker on hover
+          },
+          "& .MuiDataGrid-cell": {
+            color: "#000", // Text color
+            fontWeight: "bold", // Bold text
+            borderRight: "0px solid #ddd", // Right border for separation
           },
           "& .MuiCheckbox-root": {
             color: "#007bff",
           },
+          "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+            outline: "none !important",
+            boxShadow: "none",
+          },
+          "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
+            {
+              outline: "none !important",
+              boxShadow: "none",
+            },
         }}
       />
     </div>

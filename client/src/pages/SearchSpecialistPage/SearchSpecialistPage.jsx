@@ -4,9 +4,9 @@ import SearchSpecialists from "../../components/SearchSpecialists/SearchSpeciali
 import SearchResultsGrid from '../../components/SearchResultsGrid/SearchResultsGrid'
 
 const SearchSpecialistPage = () => {
-  const { specialistName } = useParams(); // Get the specialist name from the URL
-  const formattedName =
-    specialistName.charAt(0).toUpperCase() + specialistName.slice(1);
+  const { specializationName } = useParams(); // Get the specialist name from the URL
+  const formattedSpecializationName =
+    specializationName.charAt(0).toUpperCase() + specializationName.slice(1);
 
 const rows = [
     {
@@ -33,16 +33,122 @@ const rows = [
       fee: "2500",
       satisfaction: true,
     },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    {
+      id: 3,
+      name: "Dr. Sara Malik",
+      city: "Islamabad",
+      experience: "10",
+      fee: "2500",
+      satisfaction: true,
+    },
+    
   ];
 
 
   return (
     <div className={`${styles.container}`}>
-      <h1 className={`${styles.heading} mb-4`}>Find {formattedName + "s"}</h1>
-      <SearchSpecialists className={styles.SearchSpecialistsContainer} formattedName={formattedName}/>
+      <h1 className={`${styles.heading} mb-4`}>Find {formattedSpecializationName + "s"}</h1>
+      <SearchSpecialists className={styles.SearchSpecialistsContainer} formattedSpecializationName={formattedSpecializationName}/>
       <SearchResultsGrid className={styles.SearchResultsGridContainer} rows = {rows}/>
     </div>
   );
 };
 
 export default SearchSpecialistPage;
+

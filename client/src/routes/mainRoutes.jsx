@@ -14,7 +14,8 @@ const router = createBrowserRouter([
         { path: "/", element: <LandingPage /> },
         { path: "/Login", element: <LoginPage /> },
         { path: "/SpecialistCategory", element: <SpecialistCategoryPage />},
-        { path: "/SearchSpecialist/:specialistName", element: <SearchSpecialistPage /> }, 
+        { path: "/SearchSpecialist/:specializationName", element: <SearchSpecialistPage /> }, 
+        // { path: "/specialistProfile/:id", element: <specialistProfilePage />}
       ],
     },
     { path: "*", element: <ErrorPage /> },
