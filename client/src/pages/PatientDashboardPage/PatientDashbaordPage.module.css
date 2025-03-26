@@ -1,0 +1,79 @@
+.pageContainer {
+    font-family: Arial, sans-serif;
+    background-color: lavender;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* Ensures full viewport height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .header {
+    background-color: #556B2F;
+    padding: 15px;
+    color: white;
+    font-size: 24px;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .subHeader {
+    font-size: 24px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  h2{
+    color: white;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
+  }
+  
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .optionButton {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 250px; /* Ensures uniform size */
+    border: none;
+  }
+  
+  .optionButton img {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 5px;
+  }
+  
+  .optionButton:hover {
+    background-color: #D8BFD8; /* Light Lavender Shade */
+    color: white;
+  }
+  

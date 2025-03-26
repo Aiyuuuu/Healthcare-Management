@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #d0e1d4; /* Light green background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white; 
+    padding: 15px; /* Increased padding for better spacing */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 400px; 
+    text-align: center; /* Centered text */
+}
+
+h2 {
+    color: #566129; /* Dark green color for headings */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+.input-group {
+    margin: 15px 0; /* Space between input groups */
+}
+
+input, select {
+    width: calc(100% - 20px); /* Full width minus padding */
+    padding: 10px; /* Padding inside inputs */
+    margin-top: 5px; /* Space above inputs */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners for inputs */
+    font-size: 14px; /* Font size for inputs */
+}
+
+.email-password-group {
+    display: flex; /* Flexbox for email and password inputs */
+    justify-content: space-between; /* Space between inputs */
+}
+
+.email-password-group input {
+    width: 48%; /* Adjust width for two inputs in the same line */
+}
+
+button {
+    background-color: #566129; /* Dark green background for buttons */
+    color: white; /* White text color */
+    padding: 10px; /* Padding inside buttons */
+    width: 100%; /* Full width for buttons */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: 10px; /* Space above buttons */
+    font-size: 16px; /* Font size for buttons */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #475322; /* Darker green on hover */
+}
+
+.toggle-link {
+    color: #566129; /* Dark green color for toggle links */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: 10px; /* Space above toggle links */
+    display: block; /* Block display for links */
+    text-decoration: underline; /* Underline for links */
+}
+
+.toggle-link:hover {
+    color: #3b4a1e; /* Darker green on hover for links */
+}

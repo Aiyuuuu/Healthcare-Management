@@ -40,7 +40,9 @@ function SearchResultsGrid({ searchResults }) {
       width: 180,
       headerClassName: styles.headers,
       disableColumnMenu: true,
-      renderCell: (params) => (params.value ? "✔ High" : "❌ Low"),
+      renderCell: (params) => {
+        const value = String(params.value); 
+        return value.slice(-1) === '%' ? value : value + '%';},   
     },
     {
       field: "hospitalAddress",
@@ -69,6 +71,13 @@ function SearchResultsGrid({ searchResults }) {
         disableColumnSelector
         disableRowSelectionOnClick
         onRowClick={(params) => navigate(`/specialistProfile/${params.row.id}`)}
+        slots={{
+          noRowsOverlay: () => (
+            <div style={{ padding: "20px", textAlign: "center", fontWeight: "bold" }}>
+              No Results Found
+            </div>
+          ),
+        }}
         sx={{
           "& .MuiDataGrid-row": {
             backgroundColor: "#C7CD98",

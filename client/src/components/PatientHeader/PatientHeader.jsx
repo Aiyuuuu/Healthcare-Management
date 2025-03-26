@@ -19,8 +19,7 @@ const Header = () => {
                 <li><Link to="/">Home</Link></li>
                 <li><a href="#services">Services</a></li>
                 <li><Link to="/SpecialistCategory">Find Doctors</Link></li>
-                <li><a href="#contact">Contact</a></li>
-
+                <li><a href="/patientDashboard">Dashboard</a></li>
 
                 {/* Dropdown */}
                 <li className={styles.dropdownContainer}>
@@ -40,11 +39,9 @@ const Header = () => {
                                 left: buttonRef.current?.getBoundingClientRect().left + "px",
                             }}
                         >
-                            <Link to="/profile">Profile</Link>
                             <Link to="/prescriptions">Prescriptions</Link>
                             <Link to="/appointments">Appointments</Link>
                             <Link to="/reports">Reports</Link>
-                            <Link to="/settings">Settings</Link>
                             <Link to="/help">Help</Link>
                             <button className={styles.logoutBtn} onClick={logout}>Logout</button>
                         </div>

@@ -1,19 +1,22 @@
 import { useState } from "react";
-import styles from "./LoginPage.module.css";
+import styles from "./loginPage.module.css";
 
-const LoginPage = () => {
+const LoginRegisterPage = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [userType, setUserType] = useState("patient");
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
 
-  const handleLogin = () => {
-    alert("Login function to be implemented");
+  const handleLogin = (event) => {
+    event.preventDefault();
+    alert(`Logging in as ${userType}`);
   };
 
-  const handleRegister = () => {
-    alert("Register function to be implemented");
+  const handleRegister = (event) => {
+    event.preventDefault();
+    alert(`Registering as ${userType}`);
   };
 
   return (
@@ -21,44 +24,78 @@ const LoginPage = () => {
       {isLogin ? (
         <div className={styles.formContainer}>
           <h2>Login</h2>
-          <div className={styles.inputGroup}>
-            <select id="user-type">
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-            </select>
-          </div>
-          <div className={styles.inputGroup}>
-            <input type="email" placeholder="Email" required />
-          </div>
-          <div className={styles.inputGroup}>
-            <input type="password" placeholder="Password" required />
-          </div>
-          <button onClick={handleLogin}>Login</button>
+          <form onSubmit={handleLogin}>
+            <div className={styles.inputGroup}>
+              <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+              </select>
+            </div>
+            <div className={styles.inputGroup}>
+              <input type="email" placeholder="Email" pattern=".+@.+" required />
+            </div>
+            <div className={styles.inputGroup}>
+              <input type="password" placeholder="Password" minLength="6" maxLength="20" required />
+            </div>
+            <button type="submit">Login</button>
+          </form>
           <span className={styles.toggleLink} onClick={toggleForm}>
-            Don't have an account? Sign up
+            Don't have an account? <b style={{ cursor: "pointer" }}>Sign up</b>
           </span>
         </div>
       ) : (
         <div className={styles.formContainer}>
           <h2>Register</h2>
-          <div className={styles.inputGroup}>
-            <select id="register-user-type">
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-            </select>
-          </div>
-          <div className={styles.inputGroup}>
-            <input type="text" placeholder="Full Name" required />
-          </div>
-          <div className={styles.inputGroup}>
-            <input type="email" placeholder="Email" required />
-          </div>
-          <div className={styles.inputGroup}>
-            <input type="password" placeholder="Password" required />
-          </div>
-          <button onClick={handleRegister}>Register</button>
+          <form onSubmit={handleRegister}>
+            <div className={styles.inputGroup}>
+              <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+              </select>
+            </div>
+            <div className={styles.inputGroup}>
+              <input type="text" placeholder="Full Name" minLength="2" maxLength="50" required />
+            </div>
+            <div className={styles.inputGroup}>
+              <input type="email" placeholder="Email" pattern=".+@.+" minLength="3" maxLength="50" required />
+            </div>
+            <div className={styles.inputGroup}>
+              <input type="password" placeholder="Password" minLength="6" maxLength="30" required />
+            </div>
+            <div className={styles.inputGroup}>
+            <input 
+                    type="text" 
+                    placeholder="Phone Number" 
+                    pattern="0[0-9]{9,14}" 
+                    inputMode="numeric" 
+                    maxLength="15"
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                      if (e.target.value.length > 15) {
+                        e.target.value = e.target.value.slice(0, 15); // Enforce max 15 digits
+                      }
+                    }}
+                    title="Phone number must start with 0 and be between 10 to 15 digits"
+                    required 
+                  />
+            </div>
+            {userType === "doctor" && (
+              <>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Qualification" maxLength="100" required />
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="number" placeholder="Years of Experience" min="0" max="40" required />
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Address" maxLength="100" required />
+                </div>
+              </>
+            )}
+            <button type="submit">Register</button>
+          </form>
           <span className={styles.toggleLink} onClick={toggleForm}>
-            Already have an account? Login
+            Already have an account? <b style={{ cursor: "pointer" }}>Login</b>
           </span>
         </div>
       )}
@@ -66,4 +103,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginRegisterPage;

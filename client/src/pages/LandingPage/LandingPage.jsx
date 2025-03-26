@@ -1,13 +1,32 @@
 import styles from './LandingPage.module.css';
+import useAuthContext from '../../hooks/useAuthContext';
+import { useNavigate } from 'react-router-dom';
+import { showToast } from "../../components/ToastNotification/Toast"; 
 
 const LandingPage = () => {
+    const navigate = useNavigate();
+    const { user } = useAuthContext(); // Get auth status
+  
+    const handleGetStarted = () => {
+      if (user) {
+        if (user.role === 'patient') {
+          navigate("/patientDashboard");
+        } else if (user.role === 'doctor') {
+          navigate("/doctorDashboard");
+        } else {
+          showToast("error", "User role is incorrect or missing");
+        }
+      } else {
+        navigate("/Login");
+      }
+    }
     return (
         <div className={`${styles.pageContainer}`}>
             <section id="home" className={styles.landingpg}>
                 <div className={styles.content}>
                     <h1 className={styles.firstHeading}>Your Health, Our Priority</h1>
                     <p>Connect with expert doctors, schedule appointments, and manage your health effortlessly.</p>
-                    <a href="#services" className={styles.getStartedBtn}>Get Started</a>
+                    <a onClick={handleGetStarted} className={styles.getStartedBtn}>Get Started</a>
                 </div>
                 <img src="https://i.pinimg.com/736x/78/46/f9/7846f96a1dc39c3284118a2227fe4ef9.jpg" alt="Healthcare illustration" className={styles.image} />
             </section>

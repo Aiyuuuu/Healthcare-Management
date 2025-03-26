@@ -16,10 +16,6 @@ const SearchSpecialistPage = () => {
     setSearchResults(results);
   };
 
-  if(searchResults){
-  console.log(searchResults)
-  }
-  
   return (
     <div className={styles.container}>
       <h1 className={`${styles.heading} mb-4`}>Find {formattedSpecializationName + "s"}</h1>
@@ -34,7 +30,7 @@ const SearchSpecialistPage = () => {
       {/* Pass search results to SearchResultsGrid */}
       <SearchResultsGrid 
         className={styles.SearchResultsGridContainer} 
-        rows={searchResults} 
+        searchResults={searchResults} 
       />
     </div>
   );

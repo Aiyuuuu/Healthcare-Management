@@ -32,6 +32,8 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
                     ...filters
                 }
             });
+            if(response.status=='failed'){
+                showToast("error",response.reason? response.reason:response.message);return;}
 
             onSearchResults(response.data); // Pass results to parent
         } catch (error) {

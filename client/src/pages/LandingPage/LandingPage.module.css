@@ -26,6 +26,7 @@
     display: inline-block;
     margin-top: 20px;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .getStartedBtn:hover {

@@ -8,6 +8,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 350px;
     text-align: center;
+    min-height: 600px;
 }
 h2 {
     color: #566129;
@@ -41,3 +42,5 @@ button:hover {
     margin-top: 10px;
     display: block;
 }
+
+
