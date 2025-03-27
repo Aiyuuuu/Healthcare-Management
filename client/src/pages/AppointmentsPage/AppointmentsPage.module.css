@@ -1,0 +1,44 @@
+.headers{
+    background-color: #566129;
+    margin: 0px 3px 10px 0px;
+    color: white;
+    font-size: 1.3em;
+    border-radius: 10px 10px 3px 3px ;
+    font-weight: bold;
+    
+}
+
+.gridContainer{
+    display: flex;
+    height: 65vw;
+}
+
+.noRows {
+    text-align: center;
+    padding: 20px;
+    font-weight: bold;
+  }
+
+.container {
+padding: 20px;
+justify-content: center;
+text-align: center;
+}
+
+.refreshButton{
+    width: 10vw;
+
+}
+
+.header > button{
+    background-color: #D0E1D4;
+}
+
+.header > button:hover {
+    background-color: #566129;
+}
+
+.header{
+    margin-bottom: 10px;
+}
+

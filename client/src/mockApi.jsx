@@ -344,4 +344,45 @@ mock.onPost('/bookAppointment').reply(config => {
   });
 });
 
+
+
+
+
+const mockPatientAppointments={
+  1 :[{
+      id: 'app998x2',
+      status: 'pending',
+      date: '2025-04-1',
+      time: '09:00AM-09:30AM',
+      doctorName: 'Dr. mehboob',
+      patientName: 'mr beemar',
+      fee: '3000',
+      hospitalAddress: "very big very large very nice very beautiful hospital in karachi"
+},
+{
+  id: 'app998x3',
+  status: 'pending',
+  date: '2025-04-2',
+  time: '09:00AM-09:30AM',
+  doctorName: 'Dr. mehboob',
+  patientName: 'mr beemar',
+  fee: '3000',
+  hospitalAddress: "very big very large very nice very beautiful hospital in karachi"
+}]}
+
+mock.onGet(/\/patient\/getAppointments\/(\d+)/).reply(config => {
+  const match = config.url.match(/\/patient\/getAppointments\/(\d+)/);
+  const patientId = match ? parseInt(match[1], 10) : null; // Convert to number
+
+  if (!patientId || !mockPatientAppointments[patientId]) {
+    return [404, { message: "No appointments found for this patient." }];
+  }
+
+  return [200, { data: mockPatientAppointments[patientId] }];
+});
+
+
+
+
+
 export default mock;

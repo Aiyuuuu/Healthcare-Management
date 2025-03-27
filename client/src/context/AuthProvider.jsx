@@ -9,9 +9,9 @@ const AuthProvider = ({ children }) => {
         // Create mock user if no user exists
         if (!storedUser) {
             const mockUser = {
-                patient_id: "MOCK_PATIENT_123",
-                name: "patient User",
-                email: "test@example.com",
+                patient_id: "1",
+                name: "mr bemaar",
+                email: "patient@example.com",
                 role: "patient"
             };
             localStorage.setItem("user", JSON.stringify(mockUser));
