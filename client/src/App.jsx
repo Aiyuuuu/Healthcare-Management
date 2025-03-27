@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './app.css'
-import { AuthProvider } from "./context/AuthContext";
+import  AuthProvider  from "./context/AuthProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 import { RouterProvider } from "react-router-dom";
 import ToastNotification from "./components/ToastNotification/ToastNotification";

@@ -6,43 +6,53 @@ import { showToast } from "../../components/ToastNotification/Toast";
 const LandingPage = () => {
     const navigate = useNavigate();
     const { user } = useAuthContext(); // Get auth status
-  
+
     const handleGetStarted = () => {
-      if (user) {
-        if (user.role === 'patient') {
-          navigate("/patientDashboard");
-        } else if (user.role === 'doctor') {
-          navigate("/doctorDashboard");
+        if (user) {
+            if (user.role === 'patient') {
+                navigate("/patientDashboard");
+            } else if (user.role === 'doctor') {
+                navigate("/doctorDashboard");
+            } else {
+                showToast("error", "User role is incorrect or missing");
+            }
         } else {
-          showToast("error", "User role is incorrect or missing");
+            navigate("/Login");
         }
-      } else {
-        navigate("/Login");
-      }
-    }
+    };
+
+    const navigateToService = (path) => {
+        if (user?.role === 'patient') {
+            navigate(path);
+        } else {
+            showToast("info", "Please log in as a patient");
+            navigate("/Login");
+        }
+    };
+
     return (
-        <div className={`${styles.pageContainer}`}>
+        <div className={styles.pageContainer}>
             <section id="home" className={styles.landingpg}>
                 <div className={styles.content}>
                     <h1 className={styles.firstHeading}>Your Health, Our Priority</h1>
                     <p>Connect with expert doctors, schedule appointments, and manage your health effortlessly.</p>
                     <a onClick={handleGetStarted} className={styles.getStartedBtn}>Get Started</a>
                 </div>
-                <img src="https://i.pinimg.com/736x/78/46/f9/7846f96a1dc39c3284118a2227fe4ef9.jpg" alt="Healthcare illustration" className={styles.image} />
+                <img src="/assets/LandingPage/healthcare-illustration.jpg" alt="Healthcare illustration" className={styles.image} />
             </section>
 
             <section id="services" className={styles.services}>
                 <h2 className={styles.servicesHeadings}>Our Services</h2>
                 <div className={styles.serviceContainer}>
-                    <div className={styles.serviceBox}>
+                    <div className={styles.serviceBox} onClick={() => navigateToService("/SpecialistCategory")}>
                         <h3 className={styles.servicesHeadings}>Online Consultation</h3>
                         <p>Consult with certified doctors anytime, anywhere.</p>
                     </div>
-                    <div className={styles.serviceBox}>
+                    <div className={styles.serviceBox} onClick={() => navigateToService("/SpecialistCategory")}>
                         <h3 className={styles.servicesHeadings}>Appointment Booking</h3>
                         <p>Schedule appointments with just a few clicks.</p>
                     </div>
-                    <div className={styles.serviceBox}>
+                    <div className={styles.serviceBox} onClick={() => navigateToService("/patientDashboard")}>
                         <h3 className={styles.servicesHeadings}>Health Records</h3>
                         <p>Securely store and access your medical history.</p>
                     </div>
@@ -74,9 +84,12 @@ const LandingPage = () => {
             <section id="contact" className={styles.contact}>
                 <h2>Contact Us</h2>
                 <form>
-                    <input type="text" placeholder="Your Name" required />
-                    <input type="email" placeholder="Your Email" required />
-                    <textarea placeholder="Your Message" required></textarea>
+                    <input id="name" type="text" placeholder="Enter your name" required />
+
+                    <input id="email" type="email" placeholder="Enter your email" required />
+
+                    <textarea id="message" placeholder="Enter your message" required></textarea>
+
                     <button type="submit">Send Message</button>
                 </form>
             </section>

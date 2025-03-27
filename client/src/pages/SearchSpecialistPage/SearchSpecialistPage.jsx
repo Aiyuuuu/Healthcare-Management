@@ -13,6 +13,7 @@ const SearchSpecialistPage = () => {
 
   // Callback function to receive search results from SearchSpecialists
   const handleSearchResults = (results) => {
+    console.log("Received new search results:", results);
     setSearchResults(results);
   };
 

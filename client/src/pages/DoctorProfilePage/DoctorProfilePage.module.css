@@ -1,0 +1,143 @@
+.profileContainer {
+    max-width: 90vw;
+    margin: 8rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profileHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+  }
+  
+  .profileImageContainer {
+    margin-right: 2rem;
+  }
+  
+  .profileImage {
+    width: 150px !important;
+    height: 150px !important;
+    border: 3px solid #566129;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .leftSection {
+    flex: 1;
+  }
+  
+  .rightSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .doctorName {
+    font-size: 2.5rem;
+    color: #2a4365;
+    margin-bottom: 0.5rem;
+  }
+  
+  .specialization {
+    font-size: 1.2rem;
+    color: #4a5568;
+    margin-bottom: 1rem;
+  }
+  
+  .infoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    width: 300px;
+  }
+  
+  .infoLabel {
+    color: #718096;
+    font-weight: 500;
+  }
+  
+  .infoValue {
+    color: #2d3748;
+    font-weight: 600;
+  }
+  
+  .detailsSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .qualificationSection h3,
+  .addressSection h3 {
+    color: #2a4365;
+    margin-bottom: 1rem;
+  }
+  
+  .profileLink {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #3182ce;
+    text-decoration: none;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .bookButton {
+    padding: 12px 30px !important;
+    font-weight: 600 !important;
+    background-color: #566129 !important;
+  }
+
+  .bookButton:hover{
+    background-color: #738138 !important;
+  }
+  
+  .consultButton {
+    padding: 12px 30px !important;
+    font-weight: 600 !important;
+    border-color: #566129 !important;
+    color: #566129 !important;
+    transition: all 0.2s ease-in !important;
+  }
+
+  .consultButton:hover{
+    color: white !important;
+  }
+  
+  .ratingContainer {
+    margin: 1rem 0;
+  }
+  
+  .satisfactionRate {
+    background-color: #566129;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  
+  .loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 1rem;
+  }
+  
+  .errorContainer {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+  }

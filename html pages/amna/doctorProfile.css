@@ -1,0 +1,117 @@
+.container2{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .doctor_info{
+    margin: 20px;
+    width: 40%;
+    text-align: left;
+  }
+  
+  .doctor_img img{
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #556B2F;
+    margin: 40px;
+  }
+  
+  .container3{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .reviews_container {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(221, 160, 221, 0.3); 
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ratings{
+    margin: 20px;
+    width: 50%;
+    text-align: left;
+  
+  }
+  
+  /* Left Side: Reviews Text */
+  .reviews_info {
+    width: 50%;
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .satisfaction_circle {
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 1s ease-in-out;
+  }
+  
+  /* Patient Review Tags - Grid Layout */
+  .review-tags {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, auto));
+    gap: 10px;
+    padding: 10px;
+    margin-top: 10px;
+    justify-content: left; /* Align to left side */
+  }
+  
+  /* Individual Tag Styling */
+  .tag {
+    padding: 8px 12px;
+    border: 1px solid #2E8B57; /* Green Border */
+    border-radius: 20px;
+    font-size: 14px;
+    color: #2E8B57; 
+    background-color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Hover Effect */
+  .tag:hover {
+    background-color: #2E8B57; 
+    color: white;
+  }
+  
+  /*body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+  }*/
+  
+  .satisfaction_container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /*svg {
+    position: absolute;
+    transform: rotate(-90deg); /* Rotate for proper start point 
+  }*/
+  .satisfaction_text {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+  }

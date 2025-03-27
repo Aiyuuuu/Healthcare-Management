@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function SearchResultsGrid({ searchResults }) {
   const navigate = useNavigate();
-  // Dummy data for DataGrid
+  // columns
   const columns = [
     {
       field: "name",
@@ -35,7 +35,7 @@ function SearchResultsGrid({ searchResults }) {
       disableColumnMenu: true,
     },
     {
-      field: "satisfaction",
+      field: "satisfactionRate",
       headerName: "Satisfaction Rate",
       width: 180,
       headerClassName: styles.headers,

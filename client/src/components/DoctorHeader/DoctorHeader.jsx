@@ -2,9 +2,9 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuthContext from "../../hooks/useAuthContext";
 import useThemeContext from "../../hooks/useThemeContext"; // ✅ Import theme context
-import styles from "./patientHeader.module.css";
+import styles from "./doctorHeader.module.css";
 
-const PatientHeader = () => {
+const DoctorHeader = () => {
     const { user, logout } = useAuthContext() || {};
     const { isDark, setIsDark } = useThemeContext(); // ✅ Access theme state
     const [open, setOpen] = useState(false);
@@ -17,9 +17,7 @@ const PatientHeader = () => {
             </Link>
             <ul className={styles.navbar}>
                 <li><Link to="/">Home</Link></li>
-                <li><a href="#services">Services</a></li>
-                <li><Link to="/SpecialistCategory">Find Doctors</Link></li>
-                <li><Link to="/patientDashboard">Dashboard</Link></li>
+                <li><a href="/doctorDashboard">Dashboard</a></li>
 
                 {/* Dropdown */}
                 <li className={styles.dropdownContainer}>
@@ -39,9 +37,7 @@ const PatientHeader = () => {
                                 left: buttonRef.current?.getBoundingClientRect().left + "px",
                             }}
                         >
-                            <Link to="/prescriptions">Prescriptions</Link>
-                            <Link to="/appointments">Appointments</Link>
-                            <Link to="/reports">Reports</Link>
+                            <Link to="/doctorDashboard">Dashboard</Link>
                             <Link to="/help">Help</Link>
                             <button className={styles.logoutBtn} onClick={logout}>Logout</button>
                         </div>
@@ -59,5 +55,5 @@ const PatientHeader = () => {
     );
 };
 
-export default PatientHeader;
+export default DoctorHeader;
 
