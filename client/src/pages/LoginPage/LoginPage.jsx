@@ -1,9 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./loginPage.module.css";
+import useAuthContext from "../../hooks/useAuthContext";
+import { useNavigate } from "react-router-dom";
+import { showToast } from "../../components/ToastNotification/Toast";
 
 const LoginRegisterPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [userType, setUserType] = useState("patient");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      showToast("info", "Already logged in");
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -23,7 +36,7 @@ const LoginRegisterPage = () => {
     <div className={styles.container}>
       {isLogin ? (
         <div className={styles.formContainer}>
-          <h2>Login</h2>
+          <h3 style={{ color: "#566129" }}>Login</h3>
           <form onSubmit={handleLogin}>
             <div className={styles.inputGroup}>
               <select value={userType} onChange={(e) => setUserType(e.target.value)}>
@@ -32,10 +45,22 @@ const LoginRegisterPage = () => {
               </select>
             </div>
             <div className={styles.inputGroup}>
-              <input type="email" placeholder="Email" pattern=".+@.+" required />
+              <input
+                type="email"
+                placeholder="Email"
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                required
+              />
             </div>
             <div className={styles.inputGroup}>
-              <input type="password" placeholder="Password" minLength="6" maxLength="20" required />
+              <input
+                type="password"
+                placeholder="Password"
+                minLength="6"
+                maxLength="20"
+                autoComplete="current-password"
+                required
+              />
             </div>
             <button type="submit">Login</button>
           </form>
@@ -45,7 +70,7 @@ const LoginRegisterPage = () => {
         </div>
       ) : (
         <div className={styles.formContainer}>
-          <h2>Register</h2>
+          <h3 style={{ color: "#566129" }}>Register</h3>
           <form onSubmit={handleRegister}>
             <div className={styles.inputGroup}>
               <select value={userType} onChange={(e) => setUserType(e.target.value)}>
@@ -57,27 +82,38 @@ const LoginRegisterPage = () => {
               <input type="text" placeholder="Full Name" minLength="2" maxLength="50" required />
             </div>
             <div className={styles.inputGroup}>
-              <input type="email" placeholder="Email" pattern=".+@.+" minLength="3" maxLength="50" required />
+              <input
+                type="email"
+                placeholder="Email"
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                required
+              />
             </div>
             <div className={styles.inputGroup}>
-              <input type="password" placeholder="Password" minLength="6" maxLength="30" required />
+              <input
+                type="password"
+                placeholder="Password"
+                minLength="6"
+                maxLength="30"
+                autoComplete="new-password"
+                required
+              />
             </div>
             <div className={styles.inputGroup}>
-            <input 
-                    type="text" 
-                    placeholder="Phone Number" 
-                    pattern="0[0-9]{9,14}" 
-                    inputMode="numeric" 
-                    maxLength="15"
-                    onInput={(e) => {
-                      e.target.value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
-                      if (e.target.value.length > 15) {
-                        e.target.value = e.target.value.slice(0, 15); // Enforce max 15 digits
-                      }
-                    }}
-                    title="Phone number must start with 0 and be between 10 to 15 digits"
-                    required 
-                  />
+              <input
+                type="text"
+                placeholder="Phone Number"
+                pattern="0[0-9]{9,14}"
+                inputMode="numeric"
+                maxLength="15"
+                value={phoneNumber}
+                onChange={(e) => {
+                  const sanitizedValue = e.target.value.replace(/\D/g, "").slice(0, 15);
+                  setPhoneNumber(sanitizedValue);
+                }}
+                title="Phone number must start with 0 and be between 10 to 15 digits"
+                required
+              />
             </div>
             {userType === "doctor" && (
               <>

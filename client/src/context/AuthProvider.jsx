@@ -9,7 +9,7 @@ const AuthProvider = ({ children }) => {
         // Create mock user if no user exists
         if (!storedUser) {
             const mockUser = {
-                patient_id: "1",
+                id: "1",
                 name: "mr bemaar",
                 email: "patient@example.com",
                 role: "patient"

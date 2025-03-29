@@ -12,6 +12,8 @@ import { Close } from "@mui/icons-material";
 import axios from "axios";
 import styles from "./DoctorProfilePage.module.css";
 import ChatWindow from "../../components/ChatWindow/ChatWindow";
+import useAuthContext from "../../hooks/useAuthContext";
+import { showToast } from "../../components/ToastNotification/Toast";
 
 const DoctorProfilePage = () => {
   const { id } = useParams();
@@ -20,6 +22,7 @@ const DoctorProfilePage = () => {
   const [error, setError] = useState(null);
   const [showChat, setShowChat] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const defaultProfilePic = "/assets/DoctorProfilePage/default_icon.jpg";
 
@@ -125,9 +128,17 @@ const DoctorProfilePage = () => {
           color="primary"
           className={styles.bookButton}
           onClick={() => {
-            navigate(
-              `/specialistProfile/${id}/${doctorData.name}/${doctorData.fee}/bookAppointment`
-            );
+            if(!user){
+              showToast('info', "please login first")
+              navigate("/Login")
+            }
+            else if(user.role != 'patient'){
+            showToast('error', "login as patient first")
+            } else{
+              navigate(
+                `/specialistProfile/${id}/${doctorData.name}/${doctorData.fee}/bookAppointment`
+              );
+            }         
           }}
         >
           Book Appointment

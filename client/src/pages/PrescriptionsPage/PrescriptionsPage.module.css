@@ -5,17 +5,15 @@
     font-size: 1.3em;
     border-radius: 10px 10px 3px 3px ;
     font-weight: bold;
+    
 }
 
-.gridContainer{
+
+.container {
     display: flex;
-    height: 65vw;
-    width: 95vw;
-}
-
-.noRows {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 20px;
-    font-weight: bold;
-  }
-
+    }
+    

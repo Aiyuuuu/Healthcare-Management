@@ -384,5 +384,158 @@ mock.onGet(/\/patient\/getAppointments\/(\d+)/).reply(config => {
 
 
 
+let mockReports={1:[{
+id:"rep1192",
+title:"CBC",
+date:"2025-4-1",
+time:"9:32 AM",
+patientName:"mr beemar",
+fee:"300",
+hospitalAddress:"very big hospital in karachi with a LAB!"
 
+},
+{
+  id:"rep1122",
+  title:"nose",
+  date:"2025-4-1",
+  time:"9:40 AM",
+  patientName:"mr beemar",
+  fee:"700",
+  hospitalAddress:"very big hospital in karachi with a LAB!"
+  
+  },
+  {
+    id:"rep1132",
+    title:"eyes",
+    date:"2025-4-1",
+    time:"10:32 AM",
+    patientName:"mr beemar",
+    fee:"2000",
+    hospitalAddress:"very big hospital in karachi with a LAB!"
+    
+    }]}
+
+mock.onGet(/\/patient\/getReports\/(\d+)/).reply(config => {
+  const match = config.url.match(/\/patient\/getReports\/(\d+)/);
+  const patientId = match ? parseInt(match[1], 10) : null; // Convert to number
+
+  if (!patientId || !mockReports[patientId]) {
+    return [404, { message: "No appointments found for this patient." }];
+  }
+
+  return [200, { data: mockReports[patientId] }];
+});
+
+
+
+// Simulated Base64-encoded PDF (Replace with actual Base64 data)
+const fakePDFBase64 = "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PAovVGl0bGUgKElu..."; // Truncated for readability
+
+mock.onGet(/\/patient\/(\d+)\/downloadReport\/(\w+)/).reply((config) => {
+  const match = config.url.match(/\/patient\/(\d+)\/downloadReport\/(\w+)/);
+  const reportId = match ? match[2] : null;
+
+  if (!reportId) {
+    return [400, { message: "Invalid report request." }];
+  }
+
+  // Simulating a file download response
+  return [200, fakePDFBase64];
+});
+
+
+
+
+let mockPrescriptions={1:[{
+  id:"pres1192",
+  appointmentId:"app1244",
+  doctorName:"Dr. Sara",
+  date:"2025-4-1",
+  time:"9:32 AM",
+  hospitalAddress:"very big hospital in karachi with a LAB!"
+  
+  },
+  {
+    id:"pres112192",
+    appointmentId:"app1644",
+    doctorName:"Dr. Sara",
+    date:"2025-4-1",
+    time:"11:32 AM",
+    hospitalAddress:"very big hospital in karachi with a LAB!"
+    
+    },
+    {
+      id:"pres3192",
+      appointmentId:"app15544",
+      doctorName:"Dr. Sara",
+      date:"2025-4-1",
+      time:"10:32 AM",
+      hospitalAddress:"very big hospital in karachi with a LAB!"
+      
+      }]}
+  
+
+mock.onGet(/\/patient\/getPrescriptions\/(\d+)/).reply(config => {
+  const match = config.url.match(/\/patient\/getPrescriptions\/(\d+)/);
+  const patientId = match ? parseInt(match[1], 10) : null; // Convert to number
+
+  if (!patientId || !mockPrescriptions[patientId]) {
+    return [404, { message: "No prescriptions found for this patient." }];
+  }
+
+  return [200, { data: mockPrescriptions[patientId] }];
+});
+
+
+
+const mockPrescription = {
+  "1": [ // Use string keys for patient IDs
+    {
+      id: "pres1192",
+      doctorName: "Dr. Sara",
+      date: "2025-03-28",
+      time: "03:00 PM",
+      prescriptionDuration: "7",
+      endDate: "2025-04-04",
+      prescriptionDetails: [
+        {
+          drug: "panadol",
+          intake: "3",
+          intakeInstruction: "take before 30 mins of each meal"
+        },
+        {
+          drug: "drug187",
+          intake: "2",
+          intakeInstruction: "take in morning and night"
+        }
+      ],
+      sideNote: "light exercise daily, workout biceps and prioritize rest. avoid cardio exercises",
+      hospitalAddress:"very nice hospital, Karachi"
+    }
+  ]
+};
+
+mock.onGet(/\/patient\/(\d+)\/getPrescription\/(\w+)\/?/).reply((config) => {
+  const urlMatch = config.url.match(/\/patient\/(\d+)\/getPrescription\/(\w+)\/?/);
+  if (!urlMatch) {
+    return [400, { message: "Invalid request URL" }];
+  }
+
+  const patientId = urlMatch[1];
+  const prescriptionId = urlMatch[2];
+
+  // Check if patient exists
+  const patientPrescriptions = mockPrescription[patientId];
+  if (!patientPrescriptions) {
+    return [404, { message: "Patient not found" }];
+  }
+
+  // Find specific prescription
+  const prescription = patientPrescriptions.find(p => p.id === prescriptionId);
+  if (!prescription) {
+    return [404, { message: "Prescription not found" }];
+  }
+
+  return [200, prescription];
+});
 export default mock;

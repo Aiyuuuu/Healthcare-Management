@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 120px 60px 80px;
+    padding: 80px 60px 80px;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 1s ease-out forwards;
@@ -13,6 +13,7 @@
 .content {
     font-size: 32px;
     color: #566129;
+    transform: translateY(-50px);
 }
 
 .getStartedBtn {

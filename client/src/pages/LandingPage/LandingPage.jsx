@@ -10,9 +10,9 @@ const LandingPage = () => {
     const handleGetStarted = () => {
         if (user) {
             if (user.role === 'patient') {
-                navigate("/patientDashboard");
+                navigate("/patient/dashboard");
             } else if (user.role === 'doctor') {
-                navigate("/doctorDashboard");
+                navigate("/doctor/dashboard");
             } else {
                 showToast("error", "User role is incorrect or missing");
             }

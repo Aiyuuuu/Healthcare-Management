@@ -79,7 +79,7 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
                     placeholder={`Search ${formattedSpecializationName} by name (can be left empty)`}
                     value={searchInput}
                     onChange={handleInputChange}
-                    onKeyEnter={handleKeyPress} // Trigger search on Enter key
+                    onKeyPress={handleKeyPress} // Trigger search on Enter key
                 />
             </div>
 

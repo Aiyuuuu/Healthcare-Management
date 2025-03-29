@@ -5,10 +5,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import styles from "./AppointmentsPage.module.css";
 import useAuthContext from "../../hooks/useAuthContext";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/ToastNotification/Toast";
+import SearchResultsGrid from "../../components/SearchResultsGrid/SearchResultsGrid";
 
 const AppointmentsPage = () => {
   const navigate = useNavigate();
@@ -16,22 +17,17 @@ const AppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [refresh, toggleRefresh] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const authChecked = useRef(false); // To track if auth check was performed
 
   useEffect(() => {
-    if (authChecked.current) return;
-
-    if (!user || user.role !== "patient" || !user.patient_id) {
+    if (!user) return;
+    
+    if (user.role !== "patient" || !user.id) {
       showToast("error", "Please login as a patient");
       navigate("/");
-      authChecked.current = true; // Mark auth check as done
-      return;
     }
-
-    authChecked.current = true; // Valid user, mark check as done
   }, [user, navigate]);
-
-  const patientId = user?.patient_id;
+  
+  const patientId = user?.id;
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -41,7 +37,6 @@ const AppointmentsPage = () => {
       try {
         console.log(patientId);
         const response = await axios.get(`/patient/getAppointments/${patientId}`);
-  
         // Ensure API returns a valid data structure
         let appointmentData = response.data.data;
         if (!Array.isArray(appointmentData)) {
@@ -94,14 +89,14 @@ const AppointmentsPage = () => {
     {
       field: "date",
       headerName: "Date",
-      width: 120,
+      width: 100,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
       field: "time",
       headerName: "Time",
-      width: 120,
+      width: 135,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
@@ -129,13 +124,84 @@ const AppointmentsPage = () => {
     {
       field: "hospitalAddress",
       headerName: "Hospital Address",
-      width: 500,
+      // width: 500,
+      flex:1,
+      minWidth:"200",
       headerClassName: styles.headers,
       cellClassName: "columnAddress",
     },
   ];
 
-  if (!user || user.role !== "patient" || !user.patient_id) return null;
+  const sx={
+    "& .MuiDataGrid-root": {
+      border: "none",
+      fontFamily: "inherit",
+    },
+    "& .MuiDataGrid-row": {
+      backgroundColor: "#C7CD98",
+      cursor: "pointer",
+      borderRadius: "6px",
+      "&:not(:last-child)": {
+        marginBottom: "6px",
+      },
+      "&:hover": {
+        backgroundColor: "#A8B88E !important",
+      },
+    },
+    "& .MuiDataGrid-cell": {
+      color: "#000",
+      fontWeight: "bold",
+      borderBottom: "3px solid #566129",
+      display: "flex !important",
+      alignItems: "center",
+      "&:focus": {
+        outline: "none",
+      },
+      justifyContent:"center",
+      // width:"27%",
+        overflow:"hidden",
+        whiteSpace:"nowrap",
+        textOverflow:"ellipsis",
+    },
+    "& .MuiDataGrid-columnHeaders": {
+      backgroundColor: "#566129",
+      borderRadius: "6px",
+      borderBottom: "none",
+    },
+    "& .MuiDataGrid-columnHeader": {
+      color: "#fff !important",
+      fontWeight: "bold !important",
+      justifyContent: "center", // Center header text
+      "&:focus": {
+        outline: "none",
+      },
+    },
+    "& .MuiDataGrid-columnSeparator": {
+      display: "none",
+    },
+    "& .MuiDataGrid-virtualScroller": {
+      marginTop: "8px",
+    },
+    "& .columnAddress": {
+      justifyContent: "flex-start !important",
+      paddingLeft: "16px !important",
+      overflow:"hidden",
+      whiteSpace:"nowrap",
+      textOverflow:"ellipsis",
+      width:"100%",
+    },
+  }
+
+  if (!user || user.role !== "patient" || !user.id) {
+    return (
+      <div className={styles.container}>
+        <Typography variant="h5" color="error">
+          Access Denied. Redirecting...
+        </Typography>
+      </div>
+    );
+  }
+  
 
   return (
     <div className={styles.container}>
@@ -155,81 +221,8 @@ const AppointmentsPage = () => {
         </Button>
       </div>
 
-      <div className={styles.gridContainer}>
-        <DataGrid
-          rows={appointments}
-          columns={columns}
-          loading={isLoading}
-          autoHeight
-          pageSizeOptions={[15]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 15 } },
-          }}
-          disableRowSelectionOnClick
-          slots={{
-            noRowsOverlay: () => (
-              <div className={styles.noRows}>No appointments found</div>
-            ),
-            loadingOverlay: CircularProgress,
-          }}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-              fontFamily: "inherit",
-            },
-            "& .MuiDataGrid-row": {
-              backgroundColor: "#C7CD98",
-              cursor: "pointer",
-              borderRadius: "6px",
-              "&:not(:last-child)": {
-                marginBottom: "6px",
-              },
-              "&:hover": {
-                backgroundColor: "#A8B88E !important",
-              },
-            },
-            "& .MuiDataGrid-cell": {
-              color: "#000",
-              fontWeight: "bold",
-              borderBottom: "3px solid #566129",
-              display: "flex !important",
-              alignItems: "center",
-              "&:focus": {
-                outline: "none",
-              },
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#566129",
-              borderRadius: "6px",
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-columnHeader": {
-              color: "#fff !important",
-              fontWeight: "bold !important",
-              justifyContent: "center", // Center header text
-              "&:focus": {
-                outline: "none",
-              },
-            },
-            "& .MuiDataGrid-columnSeparator": {
-              display: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              marginTop: "8px",
-            },
-            "& .columnDoctor": {
-              justifyContent: "flex-start !important",
-            },
-            "& .columnPatient": {
-              justifyContent: "flex-start !important",
-            },
-            "& .columnAddress": {
-              justifyContent: "flex-start !important",
-              paddingLeft: "16px !important",
-            },
-          }}
-        />
-      </div>
+    <SearchResultsGrid searchResults={appointments} columns={columns} navigateEnabled={false} navigateTo={"/"} sx={sx} isLoading={isLoading} />
+     
     </div>
   );
 };

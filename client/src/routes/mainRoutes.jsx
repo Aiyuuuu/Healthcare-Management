@@ -9,6 +9,9 @@ import PatientDashbaordPage from "../pages/PatientDashboardPage/PatientDashboard
 import DoctorProfilePage from "../pages/DoctorProfilePage/DoctorProfilePage";
 import BookAppointmentPage from "../pages/BookAppointmmentPage/BookAppointmentPage";
 import AppointmentsPage from "../pages/AppointmentsPage/AppointmentsPage";
+import ReportsPage from "../pages/ReportsPage/ReportsPage";
+import PrescriptionsPage from '../pages/PrescriptionsPage/PrescriptionsPage'
+import ViewPrescriptionPage from '../pages/ViewPrescriptionPage/ViewPrescriptionPage'
 
 const router = createBrowserRouter([
     {
@@ -19,10 +22,13 @@ const router = createBrowserRouter([
         { path: "/Login", element: <LoginPage /> },
         { path: "/SpecialistCategory", element: <SpecialistCategoryPage />},
         { path: "/SearchSpecialist/:specializationName", element: <SearchSpecialistPage /> },
-        { path: "/patientDashboard", element:<PatientDashbaordPage />},
+        { path: "/patient/dashboard", element:<PatientDashbaordPage />},
         { path: "/specialistProfile/:id", element:<DoctorProfilePage />},
         { path: "/specialistProfile/:id/:doctorName/:fee/bookAppointment", element:<BookAppointmentPage /> }, 
-        { path: "/appointments", element:<AppointmentsPage /> }
+        { path: "/patient/appointments", element:<AppointmentsPage /> },
+        { path: "/patient/reports", element:<ReportsPage /> },
+        { path: "/patient/prescriptions", element:<PrescriptionsPage /> },
+        { path: "/patient/prescriptions/view/:id", element:<ViewPrescriptionPage />}
       ],
     },
     { path: "*", element: <ErrorPage /> },

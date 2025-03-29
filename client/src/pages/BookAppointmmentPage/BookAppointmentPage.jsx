@@ -112,7 +112,7 @@ const BookAppointmentPage = () => {
 
       const response = await axios.post("/bookAppointment", {
         doctorId,
-        patientId: user?.patient_id,
+        patientId: user?.id,
         date: selectedDay,
         time: selectedSlot,
         reason,
@@ -127,7 +127,7 @@ const BookAppointmentPage = () => {
 
         // Reset form after 2 seconds
         setTimeout(() => {
-          navigate("/appointments")
+          navigate("/patient/appointments")
         }, 2000);
       }
     } catch (err) {

@@ -4,6 +4,7 @@ import Footer from "../components/Footer/Footer";
 import PatientHeader from "../components/PatientHeader/PatientHeader";
 import useAuthContext from "../hooks/useAuthContext";
 import DoctorHeader from "../components/DoctorHeader/DoctorHeader";
+import ScrollToTop from "./scrollToTop";
 
 function Layout() {
   const { user } = useAuthContext();
@@ -27,6 +28,7 @@ function Layout() {
 
   return (
     <>
+      <ScrollToTop />
       {renderHeader()}
       <Outlet />
       <Footer />

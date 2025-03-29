@@ -22,14 +22,14 @@
     width: 100%;
   }
   
-  .subHeader {
+.subHeader{
     font-size: 24px;
     margin-top: 20px;
     width: 100%;
   }
   
   h2{
-    color: white;
+    color: white !important;
   }
   .container {
     display: flex;
