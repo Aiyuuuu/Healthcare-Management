@@ -265,7 +265,7 @@ mock.onGet(/getBookedSlots\/\d+\//).reply(config => {
 });
 
 // Mock POST booking endpoint
-mock.onPost('/bookAppointment').reply(config => {
+mock.onPost('/patient/bookAppointment').reply(config => {
   return new Promise((resolve) => {
     setTimeout(() => {
       try {
@@ -538,4 +538,110 @@ mock.onGet(/\/patient\/(\d+)\/getPrescription\/(\w+)\/?/).reply((config) => {
 
   return [200, prescription];
 });
+
+
+
+
+// Mock API endpoints
+// mock.onGet(/\/doctor\/(.+)\/getAppointments/).reply((config) => {
+//   const doctorId = config.url.split('/')[2];
+//   const today = new Date();
+  
+//   // Get today's appointments with automatic status updates
+//   const todayString = format(today, 'yyyy-MM-dd');
+//   const todayAppointments = getAppointmentsForDate(doctorId, todayString).map(appt => {
+//     if (appt.status === 'pending' && isBefore(new Date(), parseISO(todayString + ' ' + appt.time.split('-')[0]))) {
+//       return { ...appt, status: 'ongoing' };
+//     }
+//     return appt;
+//   });
+
+
+  // let appointments={
+
+  //   today: [
+  //       {
+  //         id: 'appt001',
+  //         patientId: '101',
+  //         patientName: 'John Doe',
+  //         reason: 'Annual checkup',
+  //         time: '9:00AM-9:30AM',
+  //         status: 'completed',
+  //       },
+  //       {
+  //         id: 'appt002',
+  //         patientId: '102',
+  //         patientName: 'Jane Smith',
+  //         time: '9:30AM-10:00AM',
+  //         reason: 'Follow-up visit',
+  //         status: 'ongoing',
+  //       },
+  //     {
+  //         id: 'appt003',
+  //         patientId: '102',
+  //         patientName: 'Smith jhon',
+  //         time: '1:00PM-01:30PM',
+  //         reason: 'Follow-up visit',
+  //         status: 'pending',
+  //       }],
+    
+  //   futureSixDays:[
+  //       {
+  //         id: 'appt067',
+  //         patientId: '101',
+  //         patientName: 'John Doe',
+  //         reason: 'Annual checkup',
+  //     date:'2025-04-1',
+  //         time: '9:00AM-9:30AM',
+  //         status: 'pending',
+  //       },
+  //       {
+  //         id: 'appt002',
+  //         doctorId: '1',
+  //         patientId: '102',
+  //         patientName: 'Jane Smith',
+  //   date:'2025-04-2',      
+  //   time: '9:30AM-10:00AM',
+  //         reason: 'Follow-up visit',
+  //         status: 'pending',
+  //       }] 
+  //   }
+    
+    let appointments={
+      appointments:{
+
+      today: [], //today is sunday and 2025-03-30
+      
+      futureSixDays:[
+          {
+            id: 'appt067',
+            patientId: '101',
+            patientName: 'John Doe',
+            reason: 'Annual checkup',
+        date:'2025-04-01',
+            time: '9:00AM-9:30AM',
+            status: 'pending',
+          },
+          {
+            id: 'appt002',
+            doctorId: '1',
+            patientId: '102',
+            patientName: 'Jane Smith',
+      date:'2025-04-02',      
+      time: '9:30AM-10:00AM',
+            reason: 'Follow-up visit',
+            status: 'pending',
+          }] 
+      }}
+      
+
+
+
+  mock.onGet(/\/doctor\/(.+)\/getAppointments/).reply((config) => {
+    const today = new Date();
+      return[200, appointments]
+  
+    });
+  
+
 export default mock;

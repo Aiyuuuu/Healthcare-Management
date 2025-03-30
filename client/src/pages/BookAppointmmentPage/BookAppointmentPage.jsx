@@ -110,7 +110,7 @@ const BookAppointmentPage = () => {
       // Set loading state when button is clicked
       setBookingStatus("loading");
 
-      const response = await axios.post("/bookAppointment", {
+      const response = await axios.post("/patient/bookAppointment", {
         doctorId,
         patientId: user?.id,
         date: selectedDay,
