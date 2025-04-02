@@ -1,292 +1,293 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
-import styles from './DoctorDashboardPage.module.css';
-import { format, isWeekend, addDays } from 'date-fns';
-import { CheckCircle, Cancel, Alarm, Assignment, Chat, Description, AccessTime, Today } from '@mui/icons-material';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FiAlertCircle,
+  FiCheckCircle,
+  FiClock,
+  FiCalendar,
+  FiFilePlus,
+  FiMessageSquare,
+} from "react-icons/fi";
+import styles from "./DoctorDashboardPage.module.css";
+import axios from "axios";
+import useAuthContext from "../../hooks/useAuthContext";
+import {showToast} from '../../components/ToastNotification/Toast'
 
-const DoctorDashboardPage = ({ doctorId }) => {
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [appointments, setAppointments] = useState({ 
-    today: [], 
-    futureSixDays: [] 
+const DoctorDashboardPage = () => {
+  const { user } = useAuthContext() || {};
+  const doctorId = user.id;
+
+  const [appointments, setAppointments] = useState({
+    today: [],
+    futureSixDays: [],
   });
+  const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const today = new Date();
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const { data } = await axios.get(`/doctor/${doctorId}/getAppointments`);
-        setAppointments({
-          today: data?.appointments?.today || [],
-          futureSixDays: data?.appointments?.futureSixDays || []
-        });
-        setError(null);
-      } catch (err) {
-        setError('Failed to fetch appointments. Please try again later.');
-        console.error('API Error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAppointments();
-  }, [doctorId]);
-
-  const handleAppointmentAction = async (action, appointmentId) => {
-    if (isWeekend(today)) return;
-    
+  const isWeekend = [0, 6].includes(today.getDay());
+  
+  const fetchAppointments = useCallback(async () => {
     try {
-      await axios.patch(`/doctor/appointments/${appointmentId}`, { action });
       const { data } = await axios.get(`/doctor/${doctorId}/getAppointments`);
-      setAppointments({
-        today: data?.appointments?.today || [],
-        futureSixDays: data?.appointments?.futureSixDays || []
-      });
+      setAppointments(data.appointments);
+      setError("");
     } catch (err) {
-      console.error('Action failed:', err);
+      setError("Failed to fetch appointments. Please try again later.");
+      console.error("API Error:", err);
+      showToast("error", "API error ", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [doctorId]); // ✅ Now `fetchAppointments` is stable
+  
+  useEffect(() => {
+    fetchAppointments();
+  }, [fetchAppointments]); // ✅ No more ESLint warning
+  
+  const handleAction = async (action, appointmentId) => {
+    // if (isWeekend) return;
+
+    try {
+      let endpoint = "";
+      let method = "post";
+      let body = {};
+
+      switch (action) {
+        case "cancel":
+          endpoint = `/appointments/${appointmentId}/cancel`;
+          method = "delete";
+          break;
+        case "complete":
+          endpoint = `/appointments/${appointmentId}/complete`;
+          method = "patch";
+          body = { status: "completed" };
+          break;
+        case "missed":
+          endpoint = `/appointments/${appointmentId}/missed`;
+          method = "patch";
+          body = { status: "missed" };
+          break;
+        default:
+          return;
+      }
+
+      await axios({
+        method,
+        url: endpoint,
+        data: body,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      await fetchAppointments(); // Refresh data after action
+    } catch (err) {
+      console.error(`Action ${action} failed:`, err);
+      setError(`Failed to ${action} appointment. Please try again.`);
     }
   };
+  const getStatusSection = (appointments, status) => {
+    const statusConfig = {
+      completed: {
+        icon: <FiCheckCircle />,
+        title: "Completed Appointments",
+        color: "#4CAF50",
+      },
+      ongoing: {
+        icon: <FiAlertCircle />,
+        title: "In Progress",
+        color: "#FFC107",
+      },
+      pending: {
+        icon: <FiClock />,
+        title: "Upcoming Appointments",
+        color: "#2196F3",
+      },
+    };
+    
 
-  const generateFutureDays = () => {
-    return Array.from({ length: 6 }).map((_, i) => addDays(today, i + 1));
+    return (
+      <div className={styles.statusSection}>
+        <div
+          className={styles.sectionHeader}
+          style={{ borderColor: statusConfig[status].color }}
+        >
+          {statusConfig[status].icon}
+          <h3>{statusConfig[status].title}</h3>
+        </div>
+        {appointments
+          .filter((a) => a.status === status)
+          .map((appt) => (
+            <div key={appt.id} className={styles.appointmentCard}>
+              <div className={styles.appointmentInfo}>
+                <h4>{appt.patientName}</h4>
+                <p>{appt.reason}</p>
+                <time>{appt.time}</time>
+              </div>
+              <div className={styles.actionButtons}>
+                {status === "ongoing" && (
+                  <>
+                    <button
+                      onClick={() => handleAction("cancel", appt.id)}
+                      className={styles.cancelBtn}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleAction("complete", appt.id)}
+                      className={styles.completeBtn}
+                    >
+                      Complete
+                    </button>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/doctor/dashboard/appointment/${appt.id}/prescription/`
+                        )
+                      }
+                      className={styles.prescriptionBtn}
+                    >
+                      Prescription
+                    </button>
+                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
+                  </>
+                )}
+                {status === "pending" && (
+                  <>
+                    <button
+                      onClick={() => handleAction("cancel", appt.id)}
+                      className={styles.cancelBtn}
+                    >
+                      Cancel
+                    </button>
+                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
+                  </>
+                )}
+                {status === "completed" && (
+                  <>
+                    <button
+                      onClick={() => handleAction("missed", appt.id)}
+                      className={styles.missedBtn}
+                    >
+                      Mark Missed
+                    </button>
+                    <button
+                      onClick={() => handleAction("completed", appt.id)}
+                      className={styles.completeBtn}
+                    >
+                      Mark Completed
+                    </button>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/doctor/dashboard/appointment/${appt.id}/prescription`
+                        )
+                      }
+                      className={styles.prescriptionBtn}
+                    >
+                      Prescription
+                    </button>
+                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+      </div>
+    );
   };
 
-  const isHoliday = isWeekend(today);
-
-  if (loading) return <div className={styles.loading}>🌀 Loading Appointments...</div>;
-  if (error) return <div className={styles.error}>{error}</div>;
+  if (loading) {
+    return <div className={styles.loading}>Loading Dashboard...</div>;
+  }
+  
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   return (
-    <div className={styles.dashboard}>
-      <div className={styles.header}>
-        <motion.button 
-          whileHover={{ scale: 1.05 }} 
-          whileTap={{ scale: 0.95 }}
-          className={styles.iconButton}
-        >
-          <Description /> Add Report
-        </motion.button>
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className={styles.iconButton}
-        >
-          <Chat /> Chat
-        </motion.button>
+    <div className={`${styles.dashboard} ${isWeekend ? styles.holiday : ""}`}>
+      <div className={styles.topBar}>
+        <button className={styles.iconButton}>
+          <FiFilePlus /> Add Report
+        </button>
+        <button className={styles.iconButton}>
+          <FiMessageSquare /> Chat
+        </button>
       </div>
 
-      {isHoliday && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={styles.holidayBanner}
-        >
-          🎉 Today is a Holiday! All functionality is disabled except Add Report.
-        </motion.div>
+      {isWeekend && (
+        <div className={styles.holidayOverlay}>
+          <h2>🎉 Holiday!</h2>
+          <p>Enjoy your day off!</p>
+        </div>
       )}
 
       <div className={styles.mainContent}>
-        <div className={styles.todaySection}>
-          <h2 className={styles.sectionTitle}><Today /> Today's Schedule</h2>
-          <div className={styles.appointmentColumns}>
-            <AppointmentList 
-              title="Completed" 
-              appointments={appointments.today.filter(a => a.status === 'completed')} 
-              type="past" 
-              disabled={isHoliday}
-              onAction={handleAppointmentAction}
-              navigate={navigate}
-            />
-            <AppointmentList 
-              title="In Progress" 
-              appointments={appointments.today.filter(a => a.status === 'ongoing')} 
-              type="current" 
-              disabled={isHoliday}
-              onAction={handleAppointmentAction}
-              navigate={navigate}
-            />
-            <AppointmentList 
-              title="Upcoming" 
-              appointments={appointments.today.filter(a => a.status === 'pending')} 
-              type="upcoming" 
-              disabled={isHoliday}
-              onAction={handleAppointmentAction}
-              navigate={navigate}
-            />
+        <div className={styles.todaysScheduleSection}>
+          <div className={styles.sectionHeader}>
+            <FiCalendar />
+            <h2>Today's Schedule</h2>
+            <time>{today.toLocaleDateString("en-GB")}</time>
           </div>
+
+          {getStatusSection(appointments.today, "ongoing")}
+          {getStatusSection(appointments.today, "pending")}
+          {getStatusSection(appointments.today, "completed")}
         </div>
 
         <div className={styles.futureSection}>
-          <h2 className={styles.sectionTitle}><AccessTime /> Next 6 Days</h2>
-          <div className={styles.daySelector}>
-            {generateFutureDays().map((date, i) => {
-              const dateString = format(date, 'yyyy-MM-dd');
-              const dayAppointments = appointments.futureSixDays.filter(a => a.date === dateString);
-              
-              return (
-                <motion.div 
-                  key={dateString}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`${styles.dayCard} ${selectedDay === i ? styles.selectedDay : ''}`}
-                  onClick={() => !isHoliday && setSelectedDay(i)}
-                >
-                  <div className={styles.dayName}>{format(date, 'EEE')}</div>
-                  <div className={styles.date}>{format(date, 'd')}</div>
-                  <div className={styles.apptCount}>
-                    {dayAppointments.length}
+          <h3>Future Days</h3>
+          <div className={styles.dateSelector}>
+  {[...new Set(appointments.futureSixDays.map(appt => appt.date))]
+    .sort()
+    .map(date => (
+      <button
+        key={date}
+        className={`${styles.dateButton} ${
+          selectedDate === date ? styles.selected : ""
+        }`}
+        onClick={() => setSelectedDate(date)}
+      >
+        {new Date(date).toLocaleDateString("en-US", { weekday: "short" })}
+      </button>
+    ))}
+</div>
+
+
+          <div className={styles.futureAppointments}>
+            {appointments.futureSixDays
+              .filter((a) => a.date === selectedDate)
+              .map((appt) => (
+                <div key={appt.id} className={styles.futureCard}>
+                  <div className={styles.appointmentInfo}>
+                    <h4>
+                      {appt.patientName +
+                        " (" +
+                        (appt.reason.length > 30
+                          ? appt.reason.slice(0, 30) + "..."
+                          : appt.reason) +
+                        ")"}
+                    </h4>
+
+                    <time>{appt.time}</time>
                   </div>
-                </motion.div>
-              );
-            })}
+                  <div className={styles.actionButtons}>
+                    <button
+                      onClick={() => handleAction("cancel", appt.id)}
+                      className={styles.cancelBtn}
+                    >
+                      Cancel
+                    </button>
+                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
+                  </div>
+                </div>
+              ))}
           </div>
-          
-          {selectedDay !== null && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className={styles.dayAppointments}
-            >
-              {appointments.futureSixDays
-                .filter(a => {
-                  const selectedDate = format(addDays(today, selectedDay + 1), 'yyyy-MM-dd');
-                  return a.date === selectedDate;
-                })
-                .map(appointment => (
-                  <AppointmentCard 
-                    key={appointment.id}
-                    appointment={appointment}
-                    type="upcoming"
-                    disabled={isHoliday}
-                    onAction={handleAppointmentAction}
-                    navigate={navigate}
-                  />
-                ))}
-            </motion.div>
-          )}
         </div>
       </div>
     </div>
   );
 };
-
-const AppointmentList = ({ title, appointments, type, disabled, onAction, navigate }) => (
-  <div className={styles.appointmentColumn}>
-    <h3 className={styles.columnTitle}>
-      {title} 
-      <span className={styles.countBadge}>{appointments.length}</span>
-    </h3>
-    <AnimatePresence>
-      {appointments.map(appointment => (
-        <AppointmentCard 
-          key={appointment.id}
-          appointment={appointment}
-          type={type}
-          disabled={disabled}
-          onAction={onAction}
-          navigate={navigate}
-        />
-      ))}
-    </AnimatePresence>
-  </div>
-);
-
-const AppointmentCard = ({ appointment, type, disabled, onAction, navigate }) => {
-  const statusColors = {
-    completed: '#4CAF50',
-    ongoing: '#2196F3',
-    pending: '#FF9800',
-    missed: '#F44336'
-  };
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, height: 0 }}
-      className={styles.appointmentCard}
-      style={{ borderLeft: `4px solid ${statusColors[appointment.status] || '#ddd'}` }}
-    >
-      <div className={styles.cardHeader}>
-        <div>
-          <div className={styles.patientName}>{appointment.patientName}</div>
-          <div className={styles.patientId}>ID: {appointment.patientId}</div>
-        </div>
-        <div className={styles.timeBadge}>
-          <Alarm fontSize="small" /> {appointment.time}
-        </div>
-      </div>
-      <div className={styles.reason}>{appointment.reason}</div>
-      
-      <div className={styles.actions}>
-        {(type === 'current' || type === 'upcoming') && !disabled && (
-          <>
-            <ActionButton 
-              icon={<Cancel />} 
-              color="#F44336" 
-              onClick={() => onAction('cancel', appointment.id)} 
-            />
-            {type === 'current' && (
-              <>
-                <ActionButton 
-                  icon={<CheckCircle />} 
-                  color="#4CAF50" 
-                  onClick={() => onAction('complete', appointment.id)} 
-                />
-                <ActionButton 
-                  icon={<Assignment />} 
-                  onClick={() => navigate(`/doctorDashboard/appointment/${appointment.id}/prescription`)}
-                />
-              </>
-            )}
-            <ActionButton 
-              icon={<Description />} 
-              onClick={() => onAction('view', appointment.id)} 
-            />
-          </>
-        )}
-        {type === 'past' && !disabled && (
-          <>
-            <ActionButton 
-              icon={<CheckCircle />} 
-              color="#4CAF50" 
-              onClick={() => onAction('complete', appointment.id)} 
-            />
-            <ActionButton 
-              icon={<Cancel />} 
-              color="#F44336" 
-              onClick={() => onAction('missed', appointment.id)} 
-            />
-            <ActionButton 
-              icon={<Assignment />} 
-              onClick={() => navigate(`/doctorDashboard/appointment/${appointment.id}/prescription`)}
-            />
-            <ActionButton 
-              icon={<Description />} 
-              onClick={() => onAction('view', appointment.id)} 
-            />
-          </>
-        )}
-      </div>
-    </motion.div>
-  );
-};
-
-const ActionButton = ({ icon, onClick, color = '#666' }) => (
-  <motion.button 
-    whileHover={{ scale: 1.1 }}
-    whileTap={{ scale: 0.9 }}
-    className={styles.actionButton}
-    style={{ color }}
-    onClick={onClick}
-  >
-    {icon}
-  </motion.button>
-);
 
 export default DoctorDashboardPage;

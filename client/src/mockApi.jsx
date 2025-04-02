@@ -174,6 +174,19 @@ const mockDoctors = {
     hospitalAddress: "South City Hospital, Karachi",
     personalLink: "https://southcity.pk/lubnatarik",
     fee: 2300
+  },
+  14: {
+    id: 14,
+    name: "Dr. Areej Tahir",
+    city: "Karachi",
+    specialization: "neurologist",
+    qualification: "MBBS, FCPS (Rheumatology)",
+    experience: 6,
+    satisfactionRate: 90,
+    avgTime: 30,
+    hospitalAddress: "South City Hospital, Karachi",
+    personalLink: "https://southcity.pk/lubnatarik",
+    fee: 2300
   }
 };
 
@@ -493,6 +506,7 @@ const mockPrescription = {
     {
       id: "pres1192",
       doctorName: "Dr. Sara",
+      patientName: "mr beemar",
       date: "2025-03-28",
       time: "03:00 PM",
       prescriptionDuration: "7",
@@ -610,26 +624,101 @@ mock.onGet(/\/patient\/(\d+)\/getPrescription\/(\w+)\/?/).reply((config) => {
     let appointments={
       appointments:{
 
-      today: [], //today is sunday and 2025-03-30
+      today: [ {
+        id: 'app998x2',
+        pres: "pres1192",
+        patientId: '101',
+        patientName: 'John Doe',
+        reason: 'Annual checkup',
+        time: '9:00AM-9:30AM',
+        status: 'ongoing',
+      },
+      {
+        id: 'appt7182732',
+        patientId: '101',
+        patientName: 'John Doe',
+        reason: 'Annual checkup',
+        time: '9:00AM-9:30AM',
+        status: 'ongoing',
+      },
+      {
+        id: 'appt7182732',
+        patientId: '101',
+        patientName: 'John Doe',
+        reason: 'Annual checkup',
+        time: '9:00AM-9:30AM',
+        status: 'ongoing',
+      },
+      {
+        id: 'appt7182732',
+        patientId: '101',
+        patientName: 'John Doe',
+        reason: 'Annual checkup',
+        time: '9:00AM-9:30AM',
+        status: 'ongoing',
+      },
+      {
+        id: 'appt7182732',
+        patientId: '101',
+        patientName: 'John Doe',
+        reason: 'Annual checkup',
+        time: '9:00AM-9:30AM',
+        status: 'ongoing',
+      }], 
       
       futureSixDays:[
           {
-            id: 'appt067',
+            id: 'jijihbu',
             patientId: '101',
             patientName: 'John Doe',
             reason: 'Annual checkup',
-        date:'2025-04-01',
+        date:'2025-04-03',
             time: '9:00AM-9:30AM',
             status: 'pending',
           },
           {
-            id: 'appt002',
+            id: 'nububu',
+            patientId: '101',
+            patientName: 'John Doe',
+            reason: 'Annual checkup',
+        date:'2025-04-03',
+            time: '9:00AM-9:30AM',
+            status: 'pending',
+          },
+          {
+            id: 'nuihnui',
+            patientId: '101',
+            patientName: 'John Doe',
+            reason: 'Annual checkup',
+        date:'2025-04-03',
+            time: '9:00AM-9:30AM',
+            status: 'pending',
+          },{
+            id: 'bhjubhj',
+            patientId: '101',
+            patientName: 'John Doe',
+            reason: 'Annual checkup',
+        date:'2025-04-03',
+            time: '9:00AM-9:30AM',
+            status: 'pending',
+          },
+          {
+            id: 'bhjbhj',
+            patientId: '101',
+            patientName: 'John Doe',
+            reason: 'Annual checkup',
+        date:'2025-04-03',
+            time: '9:00AM-9:30AM',
+            status: 'pending',
+          },
+          {
+            id: 'bnjbn',
             doctorId: '1',
             patientId: '102',
             patientName: 'Jane Smith',
-      date:'2025-04-02',      
+      date:'2025-04-04',      
       time: '9:30AM-10:00AM',
-            reason: 'Follow-up visit',
+            reason: 'Follow-up visitasdnajskfnasfnasfnasfnasjfajsfajk',
             status: 'pending',
           }] 
       }}
@@ -643,5 +732,8 @@ mock.onGet(/\/patient\/(\d+)\/getPrescription\/(\w+)\/?/).reply((config) => {
   
     });
   
+
+  
+
 
 export default mock;

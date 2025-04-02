@@ -1,289 +1,177 @@
 .dashboard {
-    all: unset;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding: 2rem;
-    background: linear-gradient(to bottom right, #f8f9fa 0%, #e9ecef 100%);
-    min-height: 100vh;
-    font-family: 'Segoe UI', system-ui;
-    box-sizing: border-box;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .iconButton {
-    all: unset;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    border-radius: 15px;
-    background: #ffffff;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
-    color: #2d3436;
-  }
-  
-  .iconButton:hover {
-    box-shadow: 0 6px 8px rgba(0,0,0,0.1);
-    transform: translateY(-1px);
-  }
-  
-  .mainContent {
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: 2fr 1fr;
-    height: calc(100vh - 160px);
-  }
-  
-  .todaySection {
-    background: rgba(255,255,255,0.8);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  }
-  
-  .futureSection {
-    background: rgba(255,255,255,0.8);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-  }
-  
-  .sectionTitle {
-    all: unset;
-    display: block;
-    font-size: 1.4rem;
-    color: #2d3436;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .appointmentColumns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    height: calc(100% - 50px);
-  }
-  
-  .appointmentColumn {
-    background: rgba(255,255,255,0.9);
-    padding: 1rem;
-    border-radius: 15px;
-    overflow-y: auto;
-  }
-  
-  .columnTitle {
-    font-size: 1.1rem;
-    color: #636e72;
-    margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .countBadge {
-    background: #dfe6e9;
-    padding: 0.2rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.9rem;
-  }
-  
-  .appointmentCard {
-    background: white;
-    padding: 1.2rem;
-    margin-bottom: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.03);
-    transition: all 0.2s;
-    min-width: 280px;
-  }
-  
-  .appointmentCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.08);
-  }
-  
-  .cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.8rem;
-  }
-  
-  .patientName {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #2d3436;
-  }
-  
-  .patientId {
-    font-size: 0.8rem;
-    color: #636e72;
-    margin-top: 0.2rem;
-  }
-  
-  .timeBadge {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: #f8f9fa;
-    padding: 0.3rem 0.6rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #636e72;
-  }
-  
-  .reason {
-    color: #636e72;
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
-  
-  .actions {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 1.2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-    flex-wrap: wrap;
-  }
-  
-  .actionButton {
-    all: unset;
-    padding: 0.5rem;
-    display: grid;
-    place-items: center;
-    border-radius: 8px;
-    cursor: pointer;
-    background: #f8f9fa;
-    width: 36px;
-    height: 36px;
-  }
-  
-  .daySelector {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    padding: 1rem 0;
-    scrollbar-width: thin;
-  }
-  
-  .dayCard {
-    flex-shrink: 0;
-    width: 80px;
-    padding: 1rem;
-    text-align: center;
-    background: white;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
-  }
-  
-  .dayCard:hover {
-    transform: translateY(-2px);
-  }
-  
-  .selectedDay {
-    background: #2196F3;
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(33,150,243,0.3);
-  }
-  
-  .dayName {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .date {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin: 0.3rem 0;
-  }
-  
-  .apptCount {
-    font-size: 0.8rem;
-    opacity: 0.8;
-  }
-  
-  .dayAppointments {
-    margin-top: 1.5rem;
-    display: grid;
-    gap: 1rem;
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 0.5rem;
-  }
-  
-  .dayAppointments::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .dayAppointments::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  
-  .dayAppointments::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-  
-  .dayAppointments::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-  
-  .holidayBanner {
-    background: #FFD700;
-    color: #000;
-    padding: 1rem;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    box-shadow: 0 3px 6px rgba(255,215,0,0.2);
-  }
-  
-  .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-size: 1.2rem;
-    color: #636e72;
-  }
-  
-  .error {
-    padding: 2rem;
-    text-align: center;
-    color: #dc3545;
-    background: #ffe6e6;
-    border-radius: 12px;
-    margin: 2rem;
-    font-weight: 500;
-  }
-  
-  @media (max-width: 1200px) {
-    .mainContent {
-      grid-template-columns: 1fr;
-      height: auto;
-    }
-    
-    .appointmentColumns {
-      grid-template-columns: 1fr;
-      height: auto;
-    }
-  }
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  position: relative;
+}
+.loading{
+  height: 100vh;
+}
+.topBar {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.iconButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  background: #2196F3;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.iconButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr;
+  gap: 2rem;
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid;
+}
+
+.sectionHeader > h2{
+  color: #566129 !important;
+}
+
+.appointmentCard {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.appointmentCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+button {
+  all: unset;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn {
+  background: #ff4444;
+  color: white;
+}
+
+.completeBtn {
+  background: #00C851;
+  color: white;
+}
+
+.prescriptionBtn {
+  background: #aa66cc;
+  color: white;
+}
+
+.detailsBtn {
+  background: #33b5e5;
+  color: white;
+}
+
+.futureSection {
+  width: 27vw;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+.todaysScheduleSection{
+  width: 65vw;
+}
+
+.dateSelector {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.dateButton {
+  text-align: center;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dateButton.selected {
+  background: #2196F3;
+  color: white;
+  transform: scale(1.05);
+}
+
+.holidayOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  animation: holidayEntrance 0.5s ease-out;
+}
+
+@keyframes holidayEntrance {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.holiday *:not(.holidayOverlay, .topBar, .iconButton) {
+  filter: blur(2px);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Add more styles for animations, responsive design, and other elements */
