@@ -12,17 +12,12 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  LinearProgress,
-  Chip,
-  Avatar,
   TextField,
   Button,
   IconButton,
 } from "@mui/material";
 import {
   MedicalInformation,
-  Event,
-  AccessTime,
   LocalHospital,
   Medication,
   NoteAlt,
@@ -33,6 +28,7 @@ import {
 } from "@mui/icons-material";
 import styles from "./DoctorPrescriptionPage.module.css";
 import { styled } from "@mui/material/styles";
+import { showToast } from "../../components/ToastNotification/Toast";
 
 const PrescriptionContainer = styled(Paper)(() => ({
   borderRadius: "24px",
@@ -44,15 +40,15 @@ const PrescriptionContainer = styled(Paper)(() => ({
 }));
 
 const SectionCard = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(3),
-    borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: theme.shadows[4],
-    backgroundColor: theme.palette.background.paper,
-    transition: "all 0.3s ease",
-    '&:hover': {
-      boxShadow: theme.shadows[6],
-    },
-  }));
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[4],
+  backgroundColor: theme.palette.background.paper,
+  transition: "all 0.3s ease",
+  "&:hover": {
+    boxShadow: theme.shadows[6],
+  },
+}));
 
 const DoctorPrescriptionPage = () => {
   const { user } = useAuthContext();
@@ -67,13 +63,16 @@ const DoctorPrescriptionPage = () => {
     try {
       setLoading(true);
       const response = await axios.get(`/patient/${user.id}/getPrescription/pres1192`);
-      setEditablePrescription(response.data);
+      const data = response.data;
+      // Ensure prescriptionDetails is always an array.
+      data.prescriptionDetails = data.prescriptionDetails || [];
+      setEditablePrescription(data);
     } catch (err) {
-      setError("Failed to load prescription");
+      showToast("error", "Failed to load prescription")
     } finally {
       setLoading(false);
     }
-  }, [apptId]);
+  }, [apptId, user]);
 
   const handleSavePrescription = async () => {
     try {
@@ -89,33 +88,40 @@ const DoctorPrescriptionPage = () => {
   };
 
   const handleAddMedication = () => {
-    setEditablePrescription(prev => ({
+    setEditablePrescription((prev) => ({
       ...prev,
       prescriptionDetails: [
         ...prev.prescriptionDetails,
-        { drug: "", dosage: "", instructions: "" }
-      ]
+        { drug: "", dosage: "", instructions: "" },
+      ],
     }));
   };
 
   const handleMedicationChange = (index, field, value) => {
     const updatedMeds = [...editablePrescription.prescriptionDetails];
     updatedMeds[index][field] = value;
-    setEditablePrescription(prev => ({ ...prev, prescriptionDetails: updatedMeds }));
+    setEditablePrescription((prev) => ({
+      ...prev,
+      prescriptionDetails: updatedMeds,
+    }));
   };
 
   const handleRemoveMedication = (index) => {
     const updatedMeds = editablePrescription.prescriptionDetails.filter((_, i) => i !== index);
-    setEditablePrescription(prev => ({ ...prev, prescriptionDetails: updatedMeds }));
+    setEditablePrescription((prev) => ({ ...prev, prescriptionDetails: updatedMeds }));
   };
 
   const handleGeneralChange = (field, value) => {
-    setEditablePrescription(prev => ({ ...prev, [field]: value }));
+    setEditablePrescription((prev) => ({ ...prev, [field]: value }));
   };
 
   useEffect(() => {
-    if (!user) navigate("/login");
-    if (user?.role !== "doctor") navigate("/");
+    if (!user) {
+      navigate("/login");
+    }
+    if (user?.role !== "doctor") {
+      navigate("/");
+    }
     fetchPrescription();
   }, [user, navigate, fetchPrescription]);
 
@@ -132,7 +138,7 @@ const DoctorPrescriptionPage = () => {
           <>
             <Box className={styles.header}>
               <MedicalInformation className={styles.mainIcon} />
-              <Typography variant="h3" className={styles.title}>
+              <Typography variant="h3" component="div" className={styles.title}>
                 Medical Prescription
                 {!isEditing && (
                   <IconButton onClick={() => setIsEditing(true)} className={styles.editButton}>
@@ -142,50 +148,81 @@ const DoctorPrescriptionPage = () => {
               </Typography>
             </Box>
 
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={6}>
-                <SectionCard>
-                  <Box className={styles.sectionHeader}>
-                    <LocalHospital className={styles.sectionIcon} />
-                    <Typography variant="h5" className={styles.sectionTitle}>
-                      Doctor & Hospital Details
-                    </Typography>
-                  </Box>
+            {/* Main Content: Left and Right columns */}
+            <Box className={styles.mainContent}>
+              {/* Left Column: Doctor & Hospital Details and Special Instructions */}
+              <div className={styles.leftColumn}>
+                <Grid container spacing={4}>
+                  <Grid size={{ xs: 12 }}>
+                    <SectionCard>
+                      <Box className={styles.sectionHeader}>
+                        <LocalHospital className={styles.sectionIcon} />
+                        <Typography variant="h5" component="div" className={styles.sectionTitle}>
+                          Doctor & Hospital Details
+                        </Typography>
+                      </Box>
+                      <DetailItem
+                        label="Date"
+                        value={new Date(editablePrescription.date).toLocaleDateString()}
+                        editable={false}
+                      />
+                      <DetailItem
+                        label="Appointment ID"
+                        value={apptId}
+                        editable={false}
+                      />
+                      <DetailItem
+                        label="Patient Name"
+                        value={editablePrescription.patientName}
+                        editable={false}
+                      />
+                      <DetailItem
+                        label="Doctor"
+                        value={editablePrescription.doctorName}
+                        editable={false}
+                      />
+                      <DetailItem
+                        label="Hospital"
+                        value={editablePrescription.hospitalAddress}
+                        editable={isEditing}
+                        onChange={(value) => handleGeneralChange("hospitalAddress", value)}
+                      />
+                    </SectionCard>
+                  </Grid>
 
-                  <DetailItem
-                    label="Date"
-                    value={new Date(editablePrescription.date).toLocaleDateString()}
-                    editable={false}
-                  />
-                  <DetailItem
-                    label="Appointment ID"
-                    value={apptId}
-                    editable={false}
-                  />
-                  <DetailItem
-                    label="Patient Name"
-                    value={editablePrescription.patientName}
-                    editable={false}
-                  />
-                  <DetailItem
-                    label="Doctor"
-                    value={editablePrescription.doctorName}
-                    editable={false}
-                  />
-                  <DetailItem
-                    label="Hospital"
-                    value={editablePrescription.hospitalAddress}
-                    editable={isEditing}
-                    onChange={(value) => handleGeneralChange('hospitalAddress', value)}
-                  />
-                </SectionCard>
-              </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <SectionCard className={styles.specialInstructions}>
+                      <Box className={styles.sectionHeader}>
+                        <NoteAlt className={styles.sectionIcon} />
+                        <Typography variant="h5" component="div" className={styles.sectionTitle}>
+                          Special Instructions
+                        </Typography>
+                      </Box>
+                      {isEditing ? (
+                        <TextField
+                          fullWidth
+                          multiline
+                          rows={4}
+                          value={editablePrescription.sideNote ?? ""}
+                          onChange={(e) => handleGeneralChange("sideNote", e.target.value)}
+                          variant="outlined"
+                        />
+                      ) : (
+                        <Typography component="div" className={styles.sideNoteText}>
+                          {editablePrescription.sideNote}
+                        </Typography>
+                      )}
+                    </SectionCard>
+                  </Grid>
+                </Grid>
+              </div>
 
-              <Grid item xs={12} md={6}>
+              {/* Right Column: Drugs/Medication Schedule */}
+              <div className={styles.rightColumn}>
                 <SectionCard>
                   <Box className={styles.sectionHeader}>
                     <Medication className={styles.sectionIcon} />
-                    <Typography variant="h5" className={styles.sectionTitle}>
+                    <Typography variant="h5" component="div" className={styles.sectionTitle}>
                       Medication Schedule
                     </Typography>
                     {isEditing && (
@@ -209,22 +246,24 @@ const DoctorPrescriptionPage = () => {
                             <Box className={styles.editableMedication}>
                               <TextField
                                 label="Drug Name"
-                                value={med.drug}
-                                onChange={(e) => handleMedicationChange(index, 'drug', e.target.value)}
+                                value={med.drug ?? ""}
+                                onChange={(e) => handleMedicationChange(index, "drug", e.target.value)}
                                 fullWidth
                                 margin="dense"
                               />
                               <TextField
                                 label="Dosage"
-                                value={med.dosage}
-                                onChange={(e) => handleMedicationChange(index, 'dosage', e.target.value)}
+                                value={med.dosage ?? ""}
+                                onChange={(e) => handleMedicationChange(index, "dosage", e.target.value)}
                                 margin="dense"
-                                style={{ marginRight: '16px' }}
+                                style={{ marginRight: "16px" }}
                               />
                               <TextField
                                 label="Instructions"
-                                value={med.instructions}
-                                onChange={(e) => handleMedicationChange(index, 'instructions', e.target.value)}
+                                value={med.instructions ?? ""}
+                                onChange={(e) =>
+                                  handleMedicationChange(index, "instructions", e.target.value)
+                                }
                                 fullWidth
                                 margin="dense"
                                 multiline
@@ -251,6 +290,8 @@ const DoctorPrescriptionPage = () => {
                                   </Typography>
                                 </Box>
                               }
+                              primaryTypographyProps={{ component: "div" }}
+                              secondaryTypographyProps={{ component: "div" }}
                             />
                           )}
                         </ListItem>
@@ -261,33 +302,8 @@ const DoctorPrescriptionPage = () => {
                     ))}
                   </List>
                 </SectionCard>
-              </Grid>
-
-              <Grid item xs={12}>
-                <SectionCard className={styles.specialInstructions}>
-                  <Box className={styles.sectionHeader}>
-                    <NoteAlt className={styles.sectionIcon} />
-                    <Typography variant="h5" className={styles.sectionTitle}>
-                      Special Instructions
-                    </Typography>
-                  </Box>
-                  {isEditing ? (
-                    <TextField
-                      fullWidth
-                      multiline
-                      rows={4}
-                      value={editablePrescription.sideNote || ''}
-                      onChange={(e) => handleGeneralChange('sideNote', e.target.value)}
-                      variant="outlined"
-                    />
-                  ) : (
-                    <Typography className={styles.sideNoteText}>
-                      {editablePrescription.sideNote}
-                    </Typography>
-                  )}
-                </SectionCard>
-              </Grid>
-            </Grid>
+              </div>
+            </Box>
 
             {isEditing && (
               <Box className={styles.actionButtons}>
@@ -314,7 +330,7 @@ const DoctorPrescriptionPage = () => {
             )}
           </>
         ) : (
-          <Typography variant="h6" className={styles.errorMessage}>
+          <Typography variant="h6" component="div" className={styles.errorMessage}>
             {error || "Failed to load prescription details"}
           </Typography>
         )}
@@ -329,17 +345,17 @@ const DetailItem = ({ label, value, editable = false, onChange }) => {
       {editable ? (
         <TextField
           label={label}
-          value={value}
+          value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
           fullWidth
           margin="dense"
         />
       ) : (
         <>
-          <Typography variant="subtitle2" className={styles.detailLabel}>
+          <Typography variant="subtitle2" component="div" className={styles.detailLabel}>
             {label}
           </Typography>
-          <Typography variant="body1" className={styles.detailValue}>
+          <Typography variant="body1" component="div" className={styles.detailValue}>
             {value}
           </Typography>
         </>

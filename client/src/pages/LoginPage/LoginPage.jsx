@@ -8,15 +8,17 @@ const LoginRegisterPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [userType, setUserType] = useState("patient");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { user } = useAuthContext();
+  const { user, logout } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
+      if(user.role=="patient"||user.role=="doctor"){
       showToast("info", "Already logged in");
-      navigate("/");
+      navigate("/");}
+      else{logout()}
     }
-  }, [user, navigate]);
+  }, [user, navigate, logout]);
 
   const toggleForm = () => {
     setIsLogin(!isLogin);

@@ -1,0 +1,59 @@
+/* AddReportsPage.module.css */
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    margin-top: 150px;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .formGroup {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .fileInput {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
+  .uploadButton {
+    width: 20% !important;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #566129;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .uploadButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  

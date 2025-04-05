@@ -14,6 +14,7 @@ import PrescriptionsPage from '../pages/PrescriptionsPage/PrescriptionsPage'
 import ViewPrescriptionPage from '../pages/ViewPrescriptionPage/ViewPrescriptionPage'
 import DoctorDashboardPage from "../pages/DoctorDashboardPage/DoctorDashboardPage";
 import DoctorPrescriptionPage from "../pages/DoctorPrescriptionPage/DoctorPrescriptionPage";
+import AddReportsPage from "../pages/AddReportsPage/AddReportsPage";
 
 const router = createBrowserRouter([
     {
@@ -31,8 +32,9 @@ const router = createBrowserRouter([
         { path: "/patient/reports", element:<ReportsPage /> },
         { path: "/patient/prescriptions", element:<PrescriptionsPage /> },
         { path: "/patient/prescriptions/view/:id", element:<ViewPrescriptionPage />},
-        { path:"/doctor/dashboard/", element:<DoctorDashboardPage />},
-        { path:"/doctor/dashboard/appointment/:apptId/prescription/", element:<DoctorPrescriptionPage />}
+        { path: "/doctor/dashboard/", element:<DoctorDashboardPage />},
+        { path: "/doctor/dashboard/appointment/:apptId/prescription/", element:<DoctorPrescriptionPage />},
+        { path: "/doctor/dashboard/addReport", element:<AddReportsPage /> }
       ],
     },
     { path: "*", element: <ErrorPage /> },

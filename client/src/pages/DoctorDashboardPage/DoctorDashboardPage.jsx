@@ -7,15 +7,16 @@ import {
   FiCalendar,
   FiFilePlus,
   FiMessageSquare,
+  FiSlash,
 } from "react-icons/fi";
 import styles from "./DoctorDashboardPage.module.css";
 import axios from "axios";
 import useAuthContext from "../../hooks/useAuthContext";
-import {showToast} from '../../components/ToastNotification/Toast'
+import { showToast } from "../../components/ToastNotification/Toast";
 
 const DoctorDashboardPage = () => {
   const { user } = useAuthContext() || {};
-  const doctorId = user.id;
+  const doctorId = user?.id;
 
   const [appointments, setAppointments] = useState({
     today: [],
@@ -27,11 +28,18 @@ const DoctorDashboardPage = () => {
   const navigate = useNavigate();
   const today = new Date();
   const isWeekend = [0, 6].includes(today.getDay());
-  
+
   const fetchAppointments = useCallback(async () => {
     try {
-      const { data } = await axios.get(`/doctor/${doctorId}/getAppointments`);
+      const { status, data } = await axios.get(
+        `/doctor/${doctorId}/getAppointments`
+      );
+      if (status != 200) {
+        console.log(data.message);
+        return;
+      }
       setAppointments(data.appointments);
+      console.log(data);
       setError("");
     } catch (err) {
       setError("Failed to fetch appointments. Please try again later.");
@@ -40,15 +48,19 @@ const DoctorDashboardPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [doctorId]); // ✅ Now `fetchAppointments` is stable
-  
+  }, [doctorId]);
+
   useEffect(() => {
     fetchAppointments();
-  }, [fetchAppointments]); // ✅ No more ESLint warning
-  
-  const handleAction = async (action, appointmentId) => {
-    // if (isWeekend) return;
 
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [fetchAppointments]);
+
+  const handleAction = async (action, appointmentId) => {
     try {
       let endpoint = "";
       let method = "post";
@@ -56,16 +68,16 @@ const DoctorDashboardPage = () => {
 
       switch (action) {
         case "cancel":
-          endpoint = `/appointments/${appointmentId}/cancel`;
+          endpoint = `/doctor/${doctorId}/appointments/${appointmentId}/cancel`;
           method = "delete";
           break;
         case "complete":
-          endpoint = `/appointments/${appointmentId}/complete`;
+          endpoint = `/doctor/${doctorId}/appointments/${appointmentId}/complete`;
           method = "patch";
           body = { status: "completed" };
           break;
         case "missed":
-          endpoint = `/appointments/${appointmentId}/missed`;
+          endpoint = `/doctor/${doctorId}/appointments/${appointmentId}/missed`;
           method = "patch";
           body = { status: "missed" };
           break;
@@ -103,8 +115,12 @@ const DoctorDashboardPage = () => {
         title: "Upcoming Appointments",
         color: "#2196F3",
       },
+      missed: {
+        icon: <FiSlash />,
+        title: "Missed Appointments",
+        color: "#FF4444",
+      },
     };
-    
 
     return (
       <div className={styles.statusSection}>
@@ -149,7 +165,6 @@ const DoctorDashboardPage = () => {
                     >
                       Prescription
                     </button>
-                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
                   </>
                 )}
                 {status === "pending" && (
@@ -160,7 +175,6 @@ const DoctorDashboardPage = () => {
                     >
                       Cancel
                     </button>
-                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
                   </>
                 )}
                 {status === "completed" && (
@@ -172,12 +186,6 @@ const DoctorDashboardPage = () => {
                       Mark Missed
                     </button>
                     <button
-                      onClick={() => handleAction("completed", appt.id)}
-                      className={styles.completeBtn}
-                    >
-                      Mark Completed
-                    </button>
-                    <button
                       onClick={() =>
                         navigate(
                           `/doctor/dashboard/appointment/${appt.id}/prescription`
@@ -187,7 +195,16 @@ const DoctorDashboardPage = () => {
                     >
                       Prescription
                     </button>
-                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
+                  </>
+                )}
+                {status === "missed" && (
+                  <>
+                    <button
+                      onClick={() => handleAction("completed", appt.id)}
+                      className={styles.completeBtn}
+                    >
+                      Mark Completed
+                    </button>
                   </>
                 )}
               </div>
@@ -200,31 +217,33 @@ const DoctorDashboardPage = () => {
   if (loading) {
     return <div className={styles.loading}>Loading Dashboard...</div>;
   }
-  
+
   if (error) {
     return <div className={styles.error}>{error}</div>;
   }
 
   return (
-    <div className={`${styles.dashboard} ${isWeekend ? styles.holiday : ""}`}>
+    // <div className={`${styles.dashboard} ${isWeekend ? styles.holiday : ""}`}>
+    <div className={styles.dashboard}>
       <div className={styles.topBar}>
-        <button className={styles.iconButton}>
+        <button className={styles.iconButton} onClick={()=>navigate("/doctor/dashboard/addReport")}>
           <FiFilePlus /> Add Report
         </button>
-        <button className={styles.iconButton}>
+        {!isWeekend&&(<button className={styles.iconButton}>
           <FiMessageSquare /> Chat
-        </button>
+        </button>)}
       </div>
 
-      {isWeekend && (
-        <div className={styles.holidayOverlay}>
-          <h2>🎉 Holiday!</h2>
-          <p>Enjoy your day off!</p>
-        </div>
-      )}
 
       <div className={styles.mainContent}>
-        <div className={styles.todaysScheduleSection}>
+        {isWeekend && (
+          <div className={styles.holidayOverlay}>
+          <h2 className={styles.holidayTitle}>🎉 Holiday!</h2>
+          <p>Enjoy the day off!</p>
+        </div>
+        )}
+        
+        {!isWeekend && (<div className={styles.todaysScheduleSection}>
           <div className={styles.sectionHeader}>
             <FiCalendar />
             <h2>Today's Schedule</h2>
@@ -234,26 +253,28 @@ const DoctorDashboardPage = () => {
           {getStatusSection(appointments.today, "ongoing")}
           {getStatusSection(appointments.today, "pending")}
           {getStatusSection(appointments.today, "completed")}
-        </div>
+          {getStatusSection(appointments.today, "missed")}
+        </div>)}
 
         <div className={styles.futureSection}>
           <h3>Future Days</h3>
           <div className={styles.dateSelector}>
-  {[...new Set(appointments.futureSixDays.map(appt => appt.date))]
-    .sort()
-    .map(date => (
-      <button
-        key={date}
-        className={`${styles.dateButton} ${
-          selectedDate === date ? styles.selected : ""
-        }`}
-        onClick={() => setSelectedDate(date)}
-      >
-        {new Date(date).toLocaleDateString("en-US", { weekday: "short" })}
-      </button>
-    ))}
-</div>
-
+            {[...new Set(appointments.futureSixDays.map((appt) => appt.date))]
+              .sort()
+              .map((date) => (
+                <button
+                  key={date}
+                  className={`${styles.dateButton} ${
+                    selectedDate === date ? styles.selected : ""
+                  }`}
+                  onClick={() => setSelectedDate(date)}
+                >
+                  {new Date(date).toLocaleDateString("en-US", {
+                    weekday: "short",
+                  })}
+                </button>
+              ))}
+          </div>
 
           <div className={styles.futureAppointments}>
             {appointments.futureSixDays

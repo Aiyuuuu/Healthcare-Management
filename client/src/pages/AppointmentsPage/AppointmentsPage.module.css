@@ -1,44 +1,109 @@
-.headers{
+.headers {
     background-color: #566129;
     margin: 0px 3px 10px 0px;
     color: white;
     font-size: 1.3em;
-    border-radius: 10px 10px 3px 3px ;
+    border-radius: 10px 10px 3px 3px;
     font-weight: bold;
-    
-}
-
-.gridContainer{
+  }
+  
+  .gridContainer {
     display: flex;
     height: 65vw;
-}
-
-.noRows {
+  }
+  
+  .noRows {
     text-align: center;
     padding: 20px;
     font-weight: bold;
   }
-
-.container {
-padding: 20px;
-justify-content: center;
-text-align: center;
-}
-
-.refreshButton{
+  
+  .container {
+    padding: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .refreshButton {
     width: 10vw;
-
-}
-
-.header > button{
-    background-color: #D0E1D4;
-}
-
-.header > button:hover {
+    background-color: #566129 !important;
+  }
+  
+  .deleteToggleButton {
+    background-color: rgb(184, 1, 1) !important;
+  }
+  
+  .header > button {
+    background-color: #d0e1d4;
+  }
+  
+  .header > button:hover {
     background-color: #566129;
-}
-
-.header{
+  }
+  
+  .header {
     margin-bottom: 10px;
-}
-
+  }
+  
+  /* Row animation for pending appointments in delete mode */
+  .pendingDelete {
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0% {
+      border: 2px solid red;
+    }
+    50% {
+      border: 2px solid transparent;
+    }
+    100% {
+      border: 2px solid red;
+    }
+  }
+  
+  /* Confirmation modal styles */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .modalButtons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  /* Column specific styling */
+  .columnAddress {
+    justify-content: flex-start !important;
+    padding-left: 16px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+  
