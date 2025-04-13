@@ -119,6 +119,9 @@ const LoginRegisterPage = () => {
             </div>
             {userType === "doctor" && (
               <>
+              <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Specialization" maxLength="100" required />
+                </div>
                 <div className={styles.inputGroup}>
                   <input type="text" placeholder="Qualification" maxLength="100" required />
                 </div>
@@ -126,8 +129,25 @@ const LoginRegisterPage = () => {
                   <input type="number" placeholder="Years of Experience" min="0" max="40" required />
                 </div>
                 <div className={styles.inputGroup}>
-                  <input type="text" placeholder="Address" maxLength="100" required />
+                  <input type="text" placeholder="City" maxLength="100" required />
                 </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Hospital address" maxLength="100" required />
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Avg Time to Patients(mins)" maxLength="100" required />
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Satisfaction Rate(%)" maxLength="100" required />
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="External Profile Link" maxLength="100" required />
+                </div>
+                <div className={styles.inputGroup}>
+                  <input type="text" placeholder="Fee (PKR)" maxLength="100" required />
+                </div>
+
+                
               </>
             )}
             <button type="submit">Register</button>
