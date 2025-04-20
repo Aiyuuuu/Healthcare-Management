@@ -1,35 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
+import api from "../services/api"; // Your API service
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
-        // Always check localStorage first
         const storedUser = localStorage.getItem("user");
-        
-        // Create mock user if no user exists
-        if (!storedUser) {
-            const mockUser = {
-                id: "1",
-                name: "mr bemaar",
-                email: "patient@example.com",
-                role: "patient"
-            };
-            localStorage.setItem("user", JSON.stringify(mockUser));
-            return mockUser;
-        }
-        
-        return JSON.parse(storedUser);
+        return storedUser ? JSON.parse(storedUser) : null;
     });
 
-    const login = (userData) => {
-        setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
+    const login = async (email, password, role) => {
+        try {
+            // API call to your backend login endpoint
+            const response = await api.post("/auth/login", {
+                email,
+                password,
+                role
+            });
+
+            // Assuming response has { user, token }
+            const { user: userData, token } = response.data;
+            
+            localStorage.setItem("user", JSON.stringify({
+                ...userData,
+                token // Store token with user object
+            }));
+            
+            setUser({ ...userData, token });
+            return { success: true };
+        } catch (error) {
+            return { 
+                success: false, 
+                message: error.response?.data?.message || "Login failed" 
+            };
+        }
     };
 
     const logout = () => {
         setUser(null);
         localStorage.removeItem("user");
+        // Optional: Call backend logout endpoint
     };
+
+    // Add token to API headers
+    useEffect(() => {
+        if (user?.token) {
+            api.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+        }
+    }, [user]);
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

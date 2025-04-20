@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { showToast } from "../../components/ToastNotification/Toast"; 
 import styles from "./SearchSpecialists.module.css";
+import api from "../../services/api";
 
 function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
     const [searchInput, setSearchInput] = useState("");
@@ -10,65 +10,72 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
         experience: "",
         fee: ""
     });
-    const [loading, setLoading] = useState(false); // Prevent duplicate calls
+    const [loading, setLoading] = useState(false);
 
     const cities = ["Karachi", "Lahore", "Islamabad", "Peshawar", "Quetta"];
 
-    // Fetch doctors when the search button is clicked
+    const parseFilters = () => {
+        let experienceStart, experienceEnd, feeStart, feeEnd;
+
+        // Parse experience filter
+        if (filters.experience) {
+            const [min, max] = filters.experience.split(/-|\+/);
+            experienceStart = parseInt(min);
+            experienceEnd = max ? parseInt(max) : 100; // Handle 10+ case
+        }
+
+        // Parse fee filter
+        if (filters.fee) {
+            const [min, max] = filters.fee.split(/-|\+/);
+            feeStart = parseInt(min);
+            feeEnd = max ? parseInt(max) : 100000; // Handle 2000+ case
+        }
+
+        return {
+            name: searchInput.trim() || undefined,
+            city: filters.city || undefined,
+            experience_start: experienceStart || undefined,
+            experience_end: experienceEnd || undefined,
+            fee_start: feeStart || undefined,
+            fee_end: feeEnd || undefined
+        };
+    };
+    
     const fetchDoctors = async () => {
         setLoading(true);
         try {
-            console.log( {
-                specialization: formattedSpecializationName,
-                name: searchInput.trim(),  // Ensure no extra spaces
-                city: filters.city || undefined,
-                experience: filters.experience || undefined,
-                fee: filters.fee || undefined
-            })
-            const response = await axios.get("/doctors", {
+            const filters = parseFilters();
+            
+            const response = await api.get("/doctors/search", {
                 params: {
                     specialization: formattedSpecializationName,
-                    name: searchInput.trim(),  // Ensure no extra spaces
-                    city: filters.city || undefined,
-                    experience: filters.experience || undefined,
-                    fee: filters.fee || undefined
+                    ...filters
                 }
             });
-            
-
-            if (["fail", "failed"].includes(response.data?.status)) {
-                showToast("error", response.data.reason || response.data.message);
+    
+            if (response.data.success) {
+                onSearchResults(response.data.data);
             } else {
-                onSearchResults(response.data); // Pass results to parent
+                showToast("error", response.data.message || "Failed to fetch doctors");
             }
         } catch (error) {
-            console.error("Error fetching doctors:", error);
-            showToast("error", error.response?.data?.message || "Network error. Please try again.");
+            const errorMessage = error.response?.data?.message || 
+                               error.message || 
+                               "Failed to fetch doctors. Please try again.";
+            showToast("error", errorMessage);
+            onSearchResults([]); // Clear previous results on error
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    };
-
-    // Handle input changes
-    const handleInputChange = (e) => {
-        setSearchInput(e.target.value);
     };
 
     // Handle filter changes
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [name]: value
-        }));
+        setFilters(prev => ({ ...prev, [name]: value }));
     };
 
-    // Handle Enter key press for search
-    const handleKeyPress = (event) => {
-        if (event.key === "Enter") {
-            fetchDoctors();
-        }
-    };
-
+    // Rest of the component remains the same...
     return (
         <div className={`row g-3 ${styles.searchComponent}`}>
             {/* Search Input */}
@@ -78,8 +85,8 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
                     className="form-control"
                     placeholder={`Search ${formattedSpecializationName} by name (can be left empty)`}
                     value={searchInput}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress} // Trigger search on Enter key
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && fetchDoctors()}
                 />
             </div>
 
@@ -87,7 +94,7 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
             <div className="col-md-2">
                 <select className="form-select" name="city" value={filters.city} onChange={handleFilterChange}>
                     <option value="">Select City</option>
-                    {cities.map((city) => (
+                    {cities.map(city => (
                         <option key={city.toLowerCase()} value={city.toLowerCase()}>{city}</option>
                     ))}
                 </select>
@@ -116,7 +123,9 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
 
             {/* Search Button */}
             <div className="col-md-2">
-                <button className={`btn btn-primary w-100 ${styles.searchButton}`} onClick={fetchDoctors} disabled={loading}>
+                <button className={`btn btn-primary w-100 ${styles.searchButton}`} 
+                        onClick={fetchDoctors} 
+                        disabled={loading}>
                     {loading ? "Searching..." : "Search"}
                 </button>
             </div>
