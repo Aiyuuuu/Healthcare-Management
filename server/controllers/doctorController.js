@@ -1,4 +1,5 @@
 const Doctor = require('../models/Doctor');
+const bcrypt = require('bcryptjs')
 
 exports.createDoctor = async (req, res) => {
   try {
@@ -81,5 +82,20 @@ exports.searchDoctors = async (req, res) => {
     res.json({ success: true, data: doctors });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const doctor = await Doctor.findByEmail(req.user.email);
+    
+    const isValid = await bcrypt.compare(oldPassword, doctor.password);
+    if (!isValid) throw new Error('Invalid current password');
+
+    await Doctor.changePassword(req.user.doctor_id, newPassword);
+    res.json({ success: true, message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
   }
 };

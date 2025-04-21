@@ -1,13 +1,5 @@
 const Patient = require('../models/Patient');
-
-exports.createPatient = async (req, res) => {
-  try {
-    const patientId = await Patient.create(req.body);
-    res.status(201).json({ success: true, patientId });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+const bcrypt = require('bcryptjs')
 
 exports.getAllPatients = async (req, res) => {
   try {
@@ -20,12 +12,13 @@ exports.getAllPatients = async (req, res) => {
 
 exports.getPatientById = async (req, res) => {
   try {
-    // Verify patient is accessing their own profile
     if (parseInt(req.params.id) !== req.user.patient_id) {
       return res.status(403).json({ success: false, message: 'Unauthorized' });
     }
 
     const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).json({ success: false, message: 'Patient not found' });
+    
     res.json({ success: true, data: patient });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -34,21 +27,35 @@ exports.getPatientById = async (req, res) => {
 
 exports.updatePatient = async (req, res) => {
   try {
-    // Verify patient is updating their own profile
     if (parseInt(req.params.id) !== req.user.patient_id) {
       return res.status(403).json({ success: false, message: 'Unauthorized' });
     }
 
     await Patient.update(req.params.id, req.body);
-    res.json({ success: true, message: 'Profile updated' });
+    const updatedPatient = await Patient.findById(req.params.id);
+    res.json({ success: true, data: updatedPatient });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
+exports.changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const patient = await Patient.findByEmail(req.user.email);
+    
+    const isValid = await bcrypt.compare(oldPassword, patient.password);
+    if (!isValid) throw new Error('Invalid current password');
+
+    await Patient.changePassword(req.user.patient_id, newPassword);
+    res.json({ success: true, message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 exports.deletePatient = async (req, res) => {
   try {
-    // Verify patient is deleting their own account
     if (parseInt(req.params.id) !== req.user.patient_id) {
       return res.status(403).json({ success: false, message: 'Unauthorized' });
     }

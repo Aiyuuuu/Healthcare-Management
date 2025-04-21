@@ -9,14 +9,14 @@ router.get('/', doctorController.getAllDoctors);
 router.get('/specialization/:specialization', doctorController.getDoctorsBySpecialization);
 router.get('/:id', doctorController.getDoctorById);
 
-// Doctor registration (no auth needed)
-router.post('/', doctorController.createDoctor);
-
 // Doctor manages their profile
 router.put('/:id', 
   authMiddleware('doctor'), 
   doctorController.updateDoctor
 );
+
+router.put('/:id/change-password', authMiddleware('doctor'), doctorController.changePassword);
+ 
 
 router.delete('/:id', 
   authMiddleware('doctor'), 

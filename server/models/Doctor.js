@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const bcrypt = require('bcryptjs');
 
 class Doctor {
   static async create(doctorData) {
@@ -11,21 +12,28 @@ class Doctor {
       specialization,
       qualification,
       experience_years,
+      patient_satisfaction_rate,
+      avg_time_to_patient,
       hospital_address,
+      doctor_link,
       fee,
     } = doctorData;
+        const hashedPassword = await bcrypt.hash(password, 10);
     const [result] = await pool.query(
-      "INSERT INTO doctors (doctor_name, email, password, phone_number, city, specialization, qualification, experience_years, hospital_address, fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO doctors (doctor_name, email, password, phone_number, city, specialization, qualification, experience_years, patient_satisfaction_rate, avg_time_to_patient, hospital_address, doctor_link, fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         doctor_name,
         email,
-        password,
+        hashedPassword,
         phone_number,
         city,
         specialization,
         qualification,
         experience_years,
+        patient_satisfaction_rate,
+        avg_time_to_patient,
         hospital_address,
+        doctor_link,
         fee,
       ]
     );
@@ -33,52 +41,82 @@ class Doctor {
   }
 
   static async findAll() {
-    const [rows] = await pool.query("SELECT * FROM doctors");
+    const [rows] = await pool.query("SELECT doctor_id, doctor_name, email, phone_number, city, specialization, qualification, experience_years, patient_satisfaction_rate, avg_time_to_patient, hospital_address, doctor_link, fee FROM doctors");
     return rows;
   }
 
   static async findById(doctorId) {
     const [rows] = await pool.query(
-      "SELECT * FROM doctors WHERE doctor_id = ?",
+      "SELECT doctor_id, doctor_name, email, phone_number, city, specialization, qualification, experience_years, patient_satisfaction_rate, avg_time_to_patient, hospital_address, doctor_link, fee FROM doctors WHERE doctor_id = ?",
       [doctorId]
+    );
+    return rows[0];
+  }
+ 
+  static async findByEmail(email) {
+    const [rows] = await pool.query(
+      'SELECT * FROM doctors WHERE email = ?', 
+      [email]
     );
     return rows[0];
   }
 
   static async findBySpecialization(specialization) {
     const [rows] = await pool.query(
-      "SELECT * FROM doctors WHERE specialization = ?",
+      "SELECT doctor_id, doctor_name, email, phone_number, city, specialization, qualification, experience_years, patient_satisfaction_rate, avg_time_to_patient, hospital_address, doctor_link, fee FROM doctors WHERE specialization = ?",
       [specialization]
     );
     return rows;
   }
-
+  
   static async update(doctorId, updateData) {
-    const {
-      doctor_name,
-      email,
-      phone_number,
-      city,
-      specialization,
-      qualification,
-      experience_years,
-      hospital_address,
-      fee,
-    } = updateData;
+    const validFields = [
+      'doctor_name', 'email', 'phone_number', 'city',
+      'specialization', 'qualification', 'experience_years',
+      'patient_satisfaction_rate', 'avg_time_to_patient',
+      'hospital_address', 'doctor_link', 'fee'
+    ];
+  
+    // Get current doctor data
+    const currentDoctor = await Doctor.findById(doctorId);
+    if (!currentDoctor) throw new Error('Doctor not found');
+  
+    // Check if email is being changed
+    if (updateData.email && updateData.email !== currentDoctor.email) {
+      const existingDoctor = await Doctor.findByEmail(updateData.email);
+      if (existingDoctor) {
+        throw new Error('Email already registered to another doctor');
+      }
+    }
+  
+    // Filter out unchanged email
+    if (updateData.email === currentDoctor.email) {
+      delete updateData.email;
+    }
+  
+    // Build dynamic query
+    const setClause = validFields
+      .filter(field => updateData[field] !== undefined)
+      .map(field => `${field} = ?`)
+      .join(', ');
+  
+    const values = validFields
+      .filter(field => updateData[field] !== undefined)
+      .map(field => updateData[field]);
+  
+    if (!setClause) throw new Error('No valid fields to update');
+  
     await pool.query(
-      "UPDATE doctors SET doctor_name = ?, email = ?, phone_number = ?, city = ?, specialization = ?, qualification = ?, experience_years = ?, hospital_address = ?, fee = ? WHERE doctor_id = ?",
-      [
-        doctor_name,
-        email,
-        phone_number,
-        city,
-        specialization,
-        qualification,
-        experience_years,
-        hospital_address,
-        fee,
-        doctorId,
-      ]
+      `UPDATE doctors SET ${setClause} WHERE doctor_id = ?`,
+      [...values, doctorId]
+    );
+  }
+
+  static async changePassword(doctorId, newPassword) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query(
+      'UPDATE doctors SET password = ? WHERE doctor_id = ?',
+      [hashedPassword, doctorId]
     );
   }
 
