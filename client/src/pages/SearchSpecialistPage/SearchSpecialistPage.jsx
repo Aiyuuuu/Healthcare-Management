@@ -13,15 +13,14 @@ const SearchSpecialistPage = () => {
 
   // Callback function to receive search results from SearchSpecialists
   const handleSearchResults = (results) => {
-    console.log("Received new search results:", results);
     setSearchResults(results);
   };
 
 
-
+ 
   const columns = [
       {
-        field: "name",
+        field: "doctor_name",
         headerName: "Doctor Name",
         width: 250,
         headerClassName: styles.headers,
@@ -35,7 +34,7 @@ const SearchSpecialistPage = () => {
         disableColumnMenu: true,
       },
       {
-        field: "experience",
+        field: "experience_years",
         headerName: "Experience (years)",
         width: 180,
         headerClassName: styles.headers,
@@ -49,7 +48,7 @@ const SearchSpecialistPage = () => {
         disableColumnMenu: true,
       },
       {
-        field: "satisfactionRate",
+        field: "patient_satisfaction_rate",
         headerName: "Satisfaction Rate",
         width: 180,
         headerClassName: styles.headers,
@@ -59,7 +58,7 @@ const SearchSpecialistPage = () => {
           return value.slice(-1) === '%' ? value : value + '%';},   
       },
       {
-        field: "hospitalAddress",
+        field: "hospital_address",
         headerName: "Hospital Address",
         // width: 500,
         flex:1,

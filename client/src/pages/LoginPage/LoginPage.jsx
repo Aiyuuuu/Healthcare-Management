@@ -49,25 +49,31 @@ const LoginRegisterPage = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);
+  
     try {
-      const response = await api.post("/api/auth/login", {
-        email: formData.email,
-        password: formData.password,
-        role: userType
-      });
-
-      const { token, role, id, name } = response.data;
-      login({ token, role, id, name });
+      // Use the context’s login method
+      const { success, message } = await login(
+        formData.email,
+        formData.password,
+        userType
+      );
+  
+      if (!success) {
+        showToast("error", message);
+        return;
+      }
+  
       showToast("success", "Login successful!");
-      navigate(role === "doctor" ? "/doctor-dashboard" : "/");
-
+      navigate(userType === "doctor" ? "/doctor-dashboard" : "/");
     } catch (error) {
-      showToast("error", error.response?.data?.message || "Login failed");
+      // Should rarely hit this, since login() handles failures
+      showToast("error", "Unexpected error during login");
+      console.log(error)
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleRegister = async (event) => {
     event.preventDefault();
     setLoading(true);

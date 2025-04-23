@@ -11,23 +11,32 @@ const AuthProvider = ({ children }) => {
     const login = async (email, password, role) => {
         try {
             // API call to your backend login endpoint
-            const response = await api.post("/auth/login", {
+            const response = await api.post("/api/auth/login", {
                 email,
                 password,
                 role
             });
 
             // Assuming response has { user, token }
-            const { user: userData, token } = response.data;
-            
-            localStorage.setItem("user", JSON.stringify({
-                ...userData,
-                token // Store token with user object
-            }));
-            
-            setUser({ ...userData, token });
+            const {
+                token,
+                role: userRole,
+                id,
+                name
+              } = response.data;
+          
+              const userToStore = {
+                id,
+                role: userRole,
+                name,
+                token
+              };
+          
+              localStorage.setItem("user", JSON.stringify(userToStore));
+              setUser(userToStore);
+          
             return { success: true };
-        } catch (error) {
+        } catch (error) { 
             return { 
                 success: false, 
                 message: error.response?.data?.message || "Login failed" 

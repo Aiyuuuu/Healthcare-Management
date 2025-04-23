@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 import {
   Button,
   IconButton,
@@ -29,10 +30,11 @@ const DoctorProfilePage = () => {
   useEffect(() => {
     const fetchDoctorData = async () => {
       try {
-        const response = await axios.get(
-          `https://api.example.com/doctors/${id}`
+        const response = await api.get(
+          `/api/doctors/${id}` 
         );
-        setDoctorData(response.data);
+        setDoctorData(response.data.data);
+        console.log(response.data.data)
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -69,7 +71,7 @@ const DoctorProfilePage = () => {
       <div className={styles.profileHeader}>
         <div className={styles.profileImageContainer}>
           <Avatar
-            src={doctorData.profilePicture || defaultProfilePic}
+            src={doctorData.profile_picture || defaultProfilePic}
             alt={doctorData.name}
             className={styles.profileImage}
             onError={(e) => {
@@ -78,11 +80,11 @@ const DoctorProfilePage = () => {
           />
         </div>
         <div className={styles.leftSection}>
-          <h1 className={styles.doctorName}>{doctorData.name}</h1>
+          <h1 className={styles.doctorName}>{doctorData.doctor_name}</h1>
           <p className={styles.specialization}>{doctorData.specialization}</p>
           <div className={styles.ratingContainer}>
             <span className={styles.satisfactionRate}>
-              {doctorData.satisfactionRate}% Patient Satisfaction
+              {doctorData.patient_satisfaction_rate}% Patient Satisfaction
             </span>
           </div>
         </div>
@@ -90,12 +92,12 @@ const DoctorProfilePage = () => {
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>Experience</span>
             <span className={styles.infoValue}>
-              {doctorData.experience} Years
+              {doctorData.experience_years} Years
             </span>
           </div>
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>Avg. Time</span>
-            <span className={styles.infoValue}>{doctorData.avgTime} mins</span>
+            <span className={styles.infoValue}>{doctorData.avg_time_to_patient} mins</span>
           </div>
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>Fee</span>
@@ -111,9 +113,9 @@ const DoctorProfilePage = () => {
         </div>
         <div className={styles.addressSection}>
           <h3>Hospital Address</h3>
-          <p>{doctorData.hospitalAddress}</p>
+          <p>{doctorData.hospital_address}</p>
           <a
-            href={doctorData.personalLink}
+            href={doctorData.doctor_link}
             className={styles.profileLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -136,7 +138,7 @@ const DoctorProfilePage = () => {
             showToast('error', "login as patient first")
             } else{
               navigate(
-                `/specialistProfile/${id}/${doctorData.name}/${doctorData.fee}/bookAppointment`
+                `/specialistProfile/${id}/${doctorData.doctor_name}/${doctorData.fee}/bookAppointment`
               );
             }         
           }}

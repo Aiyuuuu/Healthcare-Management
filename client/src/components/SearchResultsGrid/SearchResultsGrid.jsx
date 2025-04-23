@@ -20,6 +20,7 @@ function SearchResultsGrid({
       <DataGrid
         rows={searchResults}
         columns={columns}
+        getRowId={row => row.doctor_id}
         loading={isLoading}
         pagination // Enables pagination
         paginationMode="client"
@@ -34,7 +35,7 @@ function SearchResultsGrid({
         disableRowSelectionOnClick
         onRowClick={(params) => {if(onRowClick){onRowClick(params)}
         else if (navigateEnabled) {
-            navigate(`${navigateTo}${params.row.id}`);
+            navigate(`${navigateTo}${params.row.doctor_id}`);
           }
         }}
         slots={{

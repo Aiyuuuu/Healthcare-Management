@@ -46,7 +46,7 @@ function SearchSpecialists({ formattedSpecializationName, onSearchResults }) {
         try {
             const filters = parseFilters();
             
-            const response = await api.get("/doctors/search", {
+            const response = await api.get("/api/doctors/search", {
                 params: {
                     specialization: formattedSpecializationName,
                     ...filters
