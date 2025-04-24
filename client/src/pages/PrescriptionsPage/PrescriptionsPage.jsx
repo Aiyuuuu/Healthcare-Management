@@ -5,9 +5,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import useAuthContext from "../../hooks/useAuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/ToastNotification/Toast";
+import api from '../../services/api'
 
 
 
@@ -19,8 +19,6 @@ const PrescriptionsPage = () => {
   const [refresh, toggleRefresh] = useState(false);
   const handleRefresh = () => toggleRefresh((prev) => !prev);
   const authChecked = useRef(false); // To track if auth check was performed
-
-
 
 
       useEffect(() => {
@@ -45,7 +43,7 @@ const PrescriptionsPage = () => {
           setIsLoading(true);
           try {
             console.log(patientId);
-            const response = await axios.get(`/patient/getPrescriptions/${patientId}`);
+            const response = await api.get(`/patient/getPrescriptions/${patientId}`);
             // Ensure API returns a valid data structure
             let reportData = response.data.data;
             if (!Array.isArray(reportData)) {
@@ -77,22 +75,6 @@ const PrescriptionsPage = () => {
         fetchPrescriptions();
       }, [refresh, patientId]);
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   const columns = [

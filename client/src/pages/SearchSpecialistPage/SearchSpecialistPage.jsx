@@ -132,6 +132,7 @@ const SearchSpecialistPage = () => {
         navigateEnabled = {true}
         navigateTo = {"/specialistProfile/"} 
         sx = {sx}
+        IdType={"doctor_id"}
       />
     </div>
   );

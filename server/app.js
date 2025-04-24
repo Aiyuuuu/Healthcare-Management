@@ -12,8 +12,13 @@ const app = express();
 //  Security Middlewares
 // ======================
 app.use(helmet()); // Set secure HTTP headers
+
+const allowedOrigins=[
+  'http://localhost:5173',
+  'http://192.168.100.4:5173'
+]
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend origin
+  origin: allowedOrigins, // Frontend origin
   credentials: true // Allow cookies/auth headers
 }));
 
@@ -49,24 +54,46 @@ pool.getConnection((err, connection) => {
 // ======================
 //  Scheduled Tasks
 // ======================
-// Auto-complete appointments every minute
-cron.schedule('*/30 * * * * *', async () => { // Runs every 30s
+cron.schedule('*/30 * * * * *', async () => {
   try {
-    const [result] = await pool.query(`
+    // Mark appointments as ongoing when their start time begins
+    const [ongoingResult] = await pool.query(`
       UPDATE appointments
-      SET status = 'completed'
-      WHERE status IN ('pending', 'ongoing')
+      SET status = 'ongoing'
+      WHERE status = 'pending'
+      AND STR_TO_DATE(
+          CONCAT(
+              appointment_date, ' ',
+              TRIM(SUBSTRING_INDEX(appointment_time, '-', 1))
+          ),
+          '%Y-%m-%d %h:%i %p'
+      ) <= NOW()
       AND STR_TO_DATE(
           CONCAT(
               appointment_date, ' ',
               TRIM(SUBSTRING_INDEX(appointment_time, '-', -1)) 
           ),
-          '%Y-%m-%d %h:%i %p' 
+          '%Y-%m-%d %h:%i %p'
+      ) > NOW()
+    `);
+
+    // Mark appointments as completed when their end time passes
+    const [completedResult] = await pool.query(`
+      UPDATE appointments
+      SET status = 'completed'
+      WHERE status IN ('ongoing', 'pending')
+      AND STR_TO_DATE(
+          CONCAT(
+              appointment_date, ' ',
+              TRIM(SUBSTRING_INDEX(appointment_time, '-', -1)) 
+          ),
+          '%Y-%m-%d %h:%i %p'
       ) < NOW()
     `);
 
-    if (result.affectedRows > 0) {
-      console.log(`🕒 Auto-completed ${result.affectedRows} appointment(s)`);
+    // Log results if any changes were made
+    if (ongoingResult.affectedRows > 0 || completedResult.affectedRows > 0) {
+      console.log(`🕒 Updated appointments - Ongoing: ${ongoingResult.affectedRows}, Completed: ${completedResult.affectedRows}`);
     }
   } catch (error) {
     console.error('❌ Cron job error:', error.message);

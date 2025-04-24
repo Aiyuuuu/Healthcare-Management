@@ -12,7 +12,7 @@ router.post('/',
 // View prescriptions by appointment (doctor/patient)
 router.get('/appointment/:appointmentId', 
   authMiddleware(['doctor', 'patient']), 
-  prescriptionController.getPrescriptionsByAppointment
+  prescriptionController.getPrescriptionByAppointment
 );
 
 // Patient views their prescriptions

@@ -37,6 +37,7 @@ const authMiddleware = (allowedRoles) => {
       
       // Attach user and role to request
       req.user = user[0];
+      req.user.role = userRole;
       req.role = userRole;
       next();
     } catch (error) {

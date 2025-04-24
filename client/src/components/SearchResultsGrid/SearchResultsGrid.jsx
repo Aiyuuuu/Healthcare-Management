@@ -11,7 +11,8 @@ function SearchResultsGrid({
   navigateTo,
   sx,
   isLoading,
-  onRowClick
+  onRowClick,
+  IdType
 }) {
   const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ function SearchResultsGrid({
       <DataGrid
         rows={searchResults}
         columns={columns}
-        getRowId={row => row.doctor_id}
+        getRowId={row => row[IdType]}
         loading={isLoading}
         pagination // Enables pagination
         paginationMode="client"

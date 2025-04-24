@@ -10,13 +10,10 @@ import {
   FiSlash,
 } from "react-icons/fi";
 import styles from "./DoctorDashboardPage.module.css";
-import axios from "axios";
-import useAuthContext from "../../hooks/useAuthContext";
 import { showToast } from "../../components/ToastNotification/Toast";
+import api from "../../services/api";
 
 const DoctorDashboardPage = () => {
-  const { user } = useAuthContext() || {};
-  const doctorId = user?.id;
 
   const [appointments, setAppointments] = useState({
     today: [],
@@ -31,15 +28,22 @@ const DoctorDashboardPage = () => {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const { status, data } = await axios.get(
-        `/doctor/${doctorId}/getAppointments`
+      const { status, data } = await api.get(
+        `api/doctors/dashboard`
       );
       if (status != 200) {
-        console.log(data.message);
+        console.log(data.data.message);
         return;
       }
-      setAppointments(data.appointments);
-      console.log(data);
+
+      //convert from this_case to camelCase
+      const transformedData = {
+        today: data.data.appointments.today || [],
+        futureSixDays: data.data.appointments.future_six_days || [],
+      };
+
+      setAppointments(transformedData);
+      console.log(transformedData)
       setError("");
     } catch (err) {
       setError("Failed to fetch appointments. Please try again later.");
@@ -48,14 +52,14 @@ const DoctorDashboardPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [doctorId]);
+  }, []);
 
   useEffect(() => {
     fetchAppointments();
 
     const interval = setInterval(() => {
       fetchAppointments();
-    }, 60000);
+    }, 30000);
 
     return () => clearInterval(interval);
   }, [fetchAppointments]);
@@ -68,24 +72,24 @@ const DoctorDashboardPage = () => {
 
       switch (action) {
         case "cancel":
-          endpoint = `/doctor/${doctorId}/appointments/${appointmentId}/cancel`;
+          endpoint = `/api/appointments/${appointmentId}`;
           method = "delete";
           break;
-        case "complete":
-          endpoint = `/doctor/${doctorId}/appointments/${appointmentId}/complete`;
-          method = "patch";
+        case "completed":
+          endpoint = `/api/appointments/${appointmentId}/status`;
+          method = "put";
           body = { status: "completed" };
           break;
         case "missed":
-          endpoint = `/doctor/${doctorId}/appointments/${appointmentId}/missed`;
-          method = "patch";
+          endpoint = `/api/appointments/${appointmentId}/status`;
+          method = "put";
           body = { status: "missed" };
           break;
         default:
           return;
       }
 
-      await axios({
+      await api({
         method,
         url: endpoint,
         data: body,
@@ -134,9 +138,9 @@ const DoctorDashboardPage = () => {
         {appointments
           .filter((a) => a.status === status)
           .map((appt) => (
-            <div key={appt.id} className={styles.appointmentCard}>
+            <div key={appt.appointment_id} className={styles.appointmentCard}>
               <div className={styles.appointmentInfo}>
-                <h4>{appt.patientName}</h4>
+                <h4>{appt.patient_name}</h4>
                 <p>{appt.reason}</p>
                 <time>{appt.time}</time>
               </div>
@@ -144,13 +148,13 @@ const DoctorDashboardPage = () => {
                 {status === "ongoing" && (
                   <>
                     <button
-                      onClick={() => handleAction("cancel", appt.id)}
+                      onClick={() => handleAction("cancel", appt.appointment_id)}
                       className={styles.cancelBtn}
                     >
                       Cancel
                     </button>
                     <button
-                      onClick={() => handleAction("complete", appt.id)}
+                      onClick={() => handleAction("complete", appt.appointment_id)}
                       className={styles.completeBtn}
                     >
                       Complete
@@ -158,7 +162,7 @@ const DoctorDashboardPage = () => {
                     <button
                       onClick={() =>
                         navigate(
-                          `/doctor/dashboard/appointment/${appt.id}/prescription/`
+                          `/doctor/dashboard/appointment/${appt.appointment_id}/prescription/`
                         )
                       }
                       className={styles.prescriptionBtn}
@@ -170,7 +174,7 @@ const DoctorDashboardPage = () => {
                 {status === "pending" && (
                   <>
                     <button
-                      onClick={() => handleAction("cancel", appt.id)}
+                      onClick={() => handleAction("cancel", appt.appointment_id)}
                       className={styles.cancelBtn}
                     >
                       Cancel
@@ -180,7 +184,7 @@ const DoctorDashboardPage = () => {
                 {status === "completed" && (
                   <>
                     <button
-                      onClick={() => handleAction("missed", appt.id)}
+                      onClick={() => handleAction("missed", appt.appointment_id)}
                       className={styles.missedBtn}
                     >
                       Mark Missed
@@ -188,7 +192,7 @@ const DoctorDashboardPage = () => {
                     <button
                       onClick={() =>
                         navigate(
-                          `/doctor/dashboard/appointment/${appt.id}/prescription`
+                          `/doctor/dashboard/appointment/${appt.appointment_id}/prescription`
                         )
                       }
                       className={styles.prescriptionBtn}
@@ -200,7 +204,7 @@ const DoctorDashboardPage = () => {
                 {status === "missed" && (
                   <>
                     <button
-                      onClick={() => handleAction("completed", appt.id)}
+                      onClick={() => handleAction("completed", appt.appointment_id)}
                       className={styles.completeBtn}
                     >
                       Mark Completed
@@ -226,35 +230,41 @@ const DoctorDashboardPage = () => {
     // <div className={`${styles.dashboard} ${isWeekend ? styles.holiday : ""}`}>
     <div className={styles.dashboard}>
       <div className={styles.topBar}>
-        <button className={styles.iconButton} onClick={()=>navigate("/doctor/dashboard/addReport")}>
+        <button
+          className={styles.iconButton}
+          onClick={() => navigate("/doctor/dashboard/addReport")}
+        >
           <FiFilePlus /> Add Report
         </button>
-        {!isWeekend&&(<button className={styles.iconButton}>
-          <FiMessageSquare /> Chat
-        </button>)}
+        {!isWeekend && (
+          <button className={styles.iconButton}>
+            <FiMessageSquare /> Chat
+          </button>
+        )}
       </div>
-
 
       <div className={styles.mainContent}>
         {isWeekend && (
           <div className={styles.holidayOverlay}>
-          <h2 className={styles.holidayTitle}>🎉 Holiday!</h2>
-          <p>Enjoy the day off!</p>
-        </div>
-        )}
-        
-        {!isWeekend && (<div className={styles.todaysScheduleSection}>
-          <div className={styles.sectionHeader}>
-            <FiCalendar />
-            <h2>Today's Schedule</h2>
-            <time>{today.toLocaleDateString("en-GB")}</time>
+            <h2 className={styles.holidayTitle}>🎉 Holiday!</h2>
+            <p>Enjoy the day off!</p>
           </div>
+        )}
 
-          {getStatusSection(appointments.today, "ongoing")}
-          {getStatusSection(appointments.today, "pending")}
-          {getStatusSection(appointments.today, "completed")}
-          {getStatusSection(appointments.today, "missed")}
-        </div>)}
+        {!isWeekend && (
+          <div className={styles.todaysScheduleSection}>
+            <div className={styles.sectionHeader}>
+              <FiCalendar />
+              <h2>Today's Schedule</h2>
+              <time>{today.toLocaleDateString("en-GB")}</time>
+            </div>
+
+            {getStatusSection(appointments.today, "ongoing")}
+            {getStatusSection(appointments.today, "pending")}
+            {getStatusSection(appointments.today, "completed")}
+            {getStatusSection(appointments.today, "missed")}
+          </div>
+        )}
 
         <div className={styles.futureSection}>
           <h3>Future Days</h3>
@@ -277,30 +287,31 @@ const DoctorDashboardPage = () => {
           </div>
 
           <div className={styles.futureAppointments}>
-            {appointments.futureSixDays
+            {(appointments.futureSixDays || [])
               .filter((a) => a.date === selectedDate)
               .map((appt) => (
-                <div key={appt.id} className={styles.futureCard}>
+                <div key={appt.appointment_id} className={styles.futureCard}>
                   <div className={styles.appointmentInfo}>
                     <h4>
-                      {appt.patientName +
+                      {appt.patient_name +
                         " (" +
-                        (appt.reason.length > 30
-                          ? appt.reason.slice(0, 30) + "..."
-                          : appt.reason) +
+                        (appt.reason
+                          ? appt.reason.length > 30
+                            ? appt.reason.slice(0, 30) + "..."
+                            : appt.reason
+                          : "No reason provided") +
                         ")"}
                     </h4>
-
                     <time>{appt.time}</time>
                   </div>
                   <div className={styles.actionButtons}>
                     <button
-                      onClick={() => handleAction("cancel", appt.id)}
+                      onClick={() => handleAction("cancel", appt.appointment_id)}
                       className={styles.cancelBtn}
                     >
                       Cancel
                     </button>
-                    {/* <button onClick={() => handleAction('details', appt.id)} className={styles.detailsBtn}>Details</button> */}
+                    {/* <button onClick={() => handleAction('details', appt.appointment_id)} className={styles.detailsBtn}>Details</button> */}
                   </div>
                 </div>
               ))}

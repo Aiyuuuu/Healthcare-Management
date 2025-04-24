@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 class Prescription {
   static async create(prescriptionData) {
-    const { appointment_id, prescription_date, prescription_time, medicines, special_instructions } = prescriptionData;
+    const { prescription_date, prescription_time, medicines, special_instructions } = prescriptionData;
     const [result] = await pool.query(
       'INSERT INTO prescriptions (appointment_id, prescription_date, prescription_time, medicines, special_instructions) VALUES (?, ?, ?, ?, ?)',
       [appointment_id, prescription_date, prescription_time, JSON.stringify(medicines), special_instructions]
@@ -10,12 +10,36 @@ class Prescription {
     return result.insertId;
   }
 
+  static async findById(prescriptionId){
+    const [rows] = await pool.query(
+    `SELECT * from prescriptions where prescription_id = ?`, [prescriptionId]
+    )
+    return rows[0]
+  }
+
+
+
   static async findByAppointmentId(appointmentId) {
     const [rows] = await pool.query(
-      'SELECT p.*, a.patient_id, a.doctor_id FROM prescriptions p JOIN appointments a ON p.appointment_id = a.appointment_id WHERE p.appointment_id = ?',
+      `SELECT 
+        pr.prescription_id,
+        pr.duration,
+        pr.medicines,
+        pr.special_instructions,
+        DATE_FORMAT(pr.end_date, '%Y-%m-%d') AS end_date,
+        DATE_FORMAT(pr.prescription_date, '%Y-%m-%d') AS prescription_date,
+        pr.prescription_time,
+        d.doctor_name,
+        p.patient_name,
+        d.hospital_address
+      FROM prescriptions pr
+      JOIN appointments a ON pr.appointment_id = a.appointment_id
+      JOIN doctors d ON a.doctor_id = d.doctor_id
+      JOIN patients p ON a.patient_id = p.patient_id
+      WHERE pr.appointment_id = ?`,
       [appointmentId]
     );
-    return rows;
+    return rows[0];
   }
 
   static async findByPatientId(patientId) {
@@ -43,19 +67,17 @@ class Prescription {
   }
 
   static async update(prescriptionId, updateData) {
-    const { prescription_date, prescription_time, medicines, special_instructions } = updateData;
+    const { duration, medicines, special_instructions } = updateData;
     await pool.query(
       `UPDATE prescriptions 
-       SET prescription_date = ?, 
-           prescription_time = ?, 
-           medicines = ?, 
-           special_instructions = ?
+       SET medicines = ?, 
+           special_instructions = ?,
+           duration = ?
        WHERE prescription_id = ?`,
       [
-        prescription_date,
-        prescription_time,
         JSON.stringify(medicines),
         special_instructions,
+        duration,
         prescriptionId
       ]
     );

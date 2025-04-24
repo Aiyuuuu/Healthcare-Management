@@ -1,5 +1,6 @@
 const Doctor = require('../models/Doctor');
 const bcrypt = require('bcryptjs')
+const Appointment = require('../models/Appointment');
 
 exports.createDoctor = async (req, res) => {
   try {
@@ -97,5 +98,34 @@ exports.changePassword = async (req, res) => {
     res.json({ success: true, message: 'Password updated successfully' });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+
+// In controllers/doctorController.js
+exports.doctorDashboard = async (req, res) => {
+  try {
+    // Verify doctor is accessing their own dashboard
+    if (!req.user.doctor_id) {
+      return res.status(403).json({ success: false, message: "authentication is required" });
+    }
+
+    const today = await Appointment.findTodayAppointmentsByDoctorId(req.user.doctor_id);
+    const future_six_days = await Appointment.findNext6DaysAppointmentsByDoctorId(req.user.doctor_id);
+    
+    res.json({ 
+      success: true, 
+      data: {
+        appointments: {
+          today,
+          future_six_days
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: error.message 
+    });
   }
 };

@@ -171,3 +171,117 @@
 .MuiInputBase-root {
   background-color: rgba(255, 255, 255, 0.9) !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add these new styles */
+.dosageInstructionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.medicationDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 28px;
+}
+
+.editableMedication {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.editableMedication .MuiIconButton-root {
+  position: absolute;
+  right: -48px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.medicationItem {
+  align-items: flex-start !important;
+  padding-right: 60px !important;
+}
+
+.drugName {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+/* Adjust existing styles */
+.medicationDetails {
+  padding-left: 28px;
+}
+
+.MuiTextField-root {
+  margin-bottom: 0 !important;
+}
+
+.sectionCard {
+  padding: 24px !important;
+}
+
+.mainContent {
+  gap: 32px;
+}
+
+.rightColumn {
+  width: 500px;
+}
+
+
+
+
+
+
+
+
+
+
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.durationContainer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.durationText {
+  font-weight: 500;
+  color: #555;
+  margin-right: 10px;
+}
+
+.editButton {
+  margin-left: auto;
+}

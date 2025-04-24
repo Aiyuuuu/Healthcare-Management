@@ -7,8 +7,8 @@ const { authMiddleware } = require('../middleware/auth');
 router.get('/search', doctorController.searchDoctors);
 router.get('/', doctorController.getAllDoctors);
 router.get('/specialization/:specialization', doctorController.getDoctorsBySpecialization);
+router.get('/dashboard', authMiddleware('doctor'), doctorController.doctorDashboard)
 router.get('/:id', doctorController.getDoctorById);
-
 // Doctor manages their profile
 router.put('/:id', 
   authMiddleware('doctor'), 

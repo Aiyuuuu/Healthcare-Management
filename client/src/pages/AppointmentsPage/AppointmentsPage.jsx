@@ -6,10 +6,10 @@ import Typography from "@mui/material/Typography";
 import styles from "./AppointmentsPage.module.css";
 import useAuthContext from "../../hooks/useAuthContext";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/ToastNotification/Toast";
 import SearchResultsGrid from "../../components/SearchResultsGrid/SearchResultsGrid";
+import api from "../../services/api"
 
 const AppointmentsPage = () => {
   const navigate = useNavigate();
@@ -36,7 +36,8 @@ const AppointmentsPage = () => {
       if (!patientId) return;
       setIsLoading(true);
       try {
-        const response = await axios.get(`/patient/getAppointments/${patientId}`);
+        const response = await api.get(`/api/appointments/patient/${patientId}`);
+        console.log(response)
         let appointmentData = response.data.data;
         if (!Array.isArray(appointmentData)) {
           appointmentData = [appointmentData];
@@ -76,7 +77,7 @@ const AppointmentsPage = () => {
 
   const confirmCancellation = async () => {
     try {
-      await axios.delete(`/patient/appointments/cancel/${confirmAppointment.id}`);
+      await api.delete(`/api/appointments/${confirmAppointment.appointment_id}`);
       showToast("success", "Appointment canceled successfully.");
       toggleRefresh((prev) => !prev);
     } catch (error) {
@@ -98,7 +99,7 @@ const AppointmentsPage = () => {
 
   const columns = [
     {
-      field: "id",
+      field: "appointment_id",
       headerName: "Appointment ID",
       width: 150,
       headerClassName: styles.headers,
@@ -112,28 +113,28 @@ const AppointmentsPage = () => {
       disableColumnMenu: true,
     },
     {
-      field: "date",
+      field: "appointment_date",
       headerName: "Date",
       width: 100,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "time",
+      field: "appointment_time",
       headerName: "Time",
       width: 135,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "doctorName",
+      field: "doctor_name",
       headerName: "Doctor Name",
       width: 180,
       headerClassName: styles.headers,
       cellClassName: "columnDoctor",
     },
     {
-      field: "patientName",
+      field: "patient_name",
       headerName: "Patient Name",
       width: 180,
       headerClassName: styles.headers,
@@ -147,7 +148,7 @@ const AppointmentsPage = () => {
       disableColumnMenu: true,
     },
     {
-      field: "hospitalAddress",
+      field: "hospital_address",
       headerName: "Hospital Address",
       flex: 1,
       minWidth: 200,
@@ -257,6 +258,7 @@ const AppointmentsPage = () => {
         isLoading={isLoading}
         onRowClick={handleRowClick}
         getRowClassName={getRowClassName}
+        IdType={"appointment_id"}
       />
 
       {confirmAppointment && (

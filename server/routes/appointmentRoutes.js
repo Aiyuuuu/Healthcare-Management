@@ -6,11 +6,12 @@ const { authMiddleware } = require('../middleware/auth');
 // Patient creates appointment
 router.post('/', authMiddleware('patient'), appointmentController.createAppointment);
 
-// Doctor views their appointments
-router.get('/doctor/:doctorId', 
-  authMiddleware('doctor'), 
-  appointmentController.getAppointmentsByDoctor
+router.get(
+  '/getBookedSlots/:doctorId',
+  authMiddleware('patient'),
+  appointmentController.getBookedSlotsByDoctorId
 );
+
 
 // Patient views their appointments
 router.get('/patient/:patientId', 
@@ -29,5 +30,7 @@ router.delete('/:appointmentId',
   authMiddleware(['doctor', 'patient']), 
   appointmentController.deleteAppointment
 );
+
+
 
 module.exports = router;
