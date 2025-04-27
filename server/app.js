@@ -14,11 +14,17 @@ const app = express();
 app.use(helmet()); // Set secure HTTP headers
 
 
+// app.use(cors({
+//   origin: process.env.CLIENT_URL, // Your frontend URL
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   credentials: true
+// }));
+
+
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  origin: '*',  // Allow all origins
+  credentials: true,  // Allow cookies/auth headers (optional)
 }));
 
 // Handle preflight requests
