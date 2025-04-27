@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuthContext from "../../hooks/useAuthContext";
 import useThemeContext from "../../hooks/useThemeContext"; // ✅ Import theme context
-import styles from "./patientHeader.module.css";
+import styles from "./PatientHeader.module.css";
 import {showToast} from '../../components/ToastNotification/Toast'
 import { useNavigate } from "react-router-dom";
 

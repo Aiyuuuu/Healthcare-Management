@@ -10,7 +10,6 @@ import {
   Avatar,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import axios from "axios";
 import styles from "./DoctorProfilePage.module.css";
 import ChatWindow from "../../components/ChatWindow/ChatWindow";
 import useAuthContext from "../../hooks/useAuthContext";
