@@ -15,7 +15,8 @@ app.use(helmet()); // Set secure HTTP headers
 
 const allowedOrigins=[
   'http://localhost:5173',
-  'http://192.168.100.4:5173'
+  'http://192.168.100.4:5173',
+  "https://healthcare-management-r7gp.vercel.app/"
 ]
 app.use(cors({
   origin: allowedOrigins, // Frontend origin
