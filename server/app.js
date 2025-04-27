@@ -14,21 +14,16 @@ const app = express();
 app.use(helmet()); // Set secure HTTP headers
 
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like Postman, mobile apps, etc.)
-    if (!origin) return callback(null, true); 
-
-    // Check if the origin is allowed
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('CORS Not Allowed by policy'));
-    }
-  },
-  credentials: true,  // Allow cookies/auth headers
+  origin: process.env.CLIENT_URL, // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
+// Handle preflight requests
+app.options('*', cors());
+
 
 // ======================
 //  Body Parsing & JSON
