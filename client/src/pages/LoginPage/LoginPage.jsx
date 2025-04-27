@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./loginPage.module.css";
+import styles from "./LoginPage.module.css";
 import useAuthContext from "../../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/ToastNotification/Toast";
