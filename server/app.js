@@ -13,14 +13,21 @@ const app = express();
 // ======================
 app.use(helmet()); // Set secure HTTP headers
 
-const allowedOrigins=[
-  'http://localhost:5173',
-  'http://192.168.100.4:5173',
-  "https://healthcare-management-r7gp.vercel.app/"
-]
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 app.use(cors({
-  origin: allowedOrigins, // Frontend origin
-  credentials: true // Allow cookies/auth headers
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman, mobile apps, etc.)
+    if (!origin) return callback(null, true); 
+
+    // Check if the origin is allowed
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('CORS Not Allowed by policy'));
+    }
+  },
+  credentials: true,  // Allow cookies/auth headers
 }));
 
 // ======================
