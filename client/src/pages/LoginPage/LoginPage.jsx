@@ -64,7 +64,7 @@ const LoginRegisterPage = () => {
       }
   
       showToast("success", "Login successful!");
-      navigate(userType === "doctor" ? "/doctor-dashboard" : "/");
+      navigate(userType === "doctor" ? "/doctor/dashboard" : "/");
     } catch (error) {
       // Should rarely hit this, since login() handles failures
       showToast("error", "Unexpected error during login");
@@ -101,7 +101,7 @@ const LoginRegisterPage = () => {
       const { token, role, id, name } = response.data;
       login({ token, role, id, name });
       showToast("success", "Registration successful!");
-      navigate(role === "doctor" ? "/doctor-dashboard" : "/");
+      navigate(role === "doctor" ? "/doctor/dashboard" : "/");
 
     } catch (error) {
       showToast("error", error.response?.data?.message || "Registration failed");
