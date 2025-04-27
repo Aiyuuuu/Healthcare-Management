@@ -73,17 +73,38 @@ exports.getPrescriptionByAppointment = async (req, res) => {
   }
 };
 
-exports.getPrescriptionsByPatient = async (req, res) => {
+exports.getPrescriptionsListByPatient = async (req, res) => {
+  function formatTimeToAMPM(time24) {
+    const [hourStr, minute] = time24.split(':');
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12; // convert 0 to 12
+    return `${hour}:${minute} ${ampm}`;
+  }
+
+  function formatDate(dateObj) {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
   try {
-    // Verify patient is accessing their own prescriptions
-    if (parseInt(req.params.patientId) !== req.user.patient_id) {
+    if (!req.user.patient_id) {
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
     const prescriptions = await Prescription.findByPatientId(
-      req.params.patientId
+      req.user.patient_id
     );
-    res.json({ success: true, data: prescriptions });
+
+    const formattedPrescriptions = prescriptions.map((prescription) => ({
+      ...prescription,
+      prescription_date: formatDate(new Date(prescription.prescription_date)),   // 🛠 fix the date
+      prescription_time: formatTimeToAMPM(prescription.prescription_time),   
+      end_date: formatDate(new Date(prescription.end_date))    // 🛠 fix the time
+    }));
+
+    res.json({ success: true, data: formattedPrescriptions });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -1,8 +1,13 @@
 import axios from "axios";
 
+// const baseURL = import.meta.env.OFFLINE
+//   ? "http://localhost:3000"
+//   : import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+const baseURL="http://localhost:3000"
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000" 
-  });
+  baseURL,
+});
   
 // Add request interceptor (preserves your existing components)
 api.interceptors.request.use(config => {

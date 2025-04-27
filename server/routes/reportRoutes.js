@@ -3,27 +3,30 @@ const router = express.Router();
 const reportController = require('../controllers/reportController');
 const { authMiddleware } = require('../middleware/auth');
 
-// Upload new report (doctor only)
-router.post('/',
+router.post(
+  '/createReportEntry',
   authMiddleware('doctor'),
-  reportController.uploadReport,
-  reportController.createReport
+  reportController.preCreateReport,  // ◀️ insert row + set req.customFilename
 );
 
-// Get reports by patient
-router.get('/patient/:patientId',
+router.post(
+  '/uploadReport/:reportId',
+  authMiddleware('doctor'),
+  reportController.uploadReport 
+);
+
+
+router.get('/patient',
   authMiddleware('patient'),
-  reportController.getReportsByPatient
-);
+  reportController.getReportsListByPatient)
 
-// Get reports by doctor
-router.get('/doctor/:doctorId',
-  authMiddleware('doctor'),
-  reportController.getReportsByDoctor
-);
+  router.get(
+    '/download/:reportId',
+    authMiddleware('patient'),
+    reportController.downloadReport
+  );
 
-// Delete report (doctor only)
-router.delete('/:id',
+router.delete('/:reportId',
   authMiddleware('doctor'),
   reportController.deleteReport
 );

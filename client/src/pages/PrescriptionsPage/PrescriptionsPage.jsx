@@ -43,7 +43,7 @@ const PrescriptionsPage = () => {
           setIsLoading(true);
           try {
             console.log(patientId);
-            const response = await api.get(`/patient/getPrescriptions/${patientId}`);
+            const response = await api.get(`/api/prescriptions/patient`);
             // Ensure API returns a valid data structure
             let reportData = response.data.data;
             if (!Array.isArray(reportData)) {
@@ -79,21 +79,21 @@ const PrescriptionsPage = () => {
 
   const columns = [
     {
-      field: "id",
+      field: "prescription_id",
       headerName: "Prescription ID",
       width: 150,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "appointmentId",
+      field: "appointment_id",
       headerName: "Appointment Id",
       width: 150,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-        field: "doctorName",
+        field: "doctor_name",
         headerName: "Doctor Name",
         width: 180,
         headerClassName: styles.headers,
@@ -102,21 +102,21 @@ const PrescriptionsPage = () => {
 
       },
     {
-      field: "date",
+      field: "prescription_date",
       headerName: "Date",
       width: 100,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "time",
+      field: "prescription_time",
       headerName: "Time",
       width: 135,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "hospitalAddress",
+      field: "hospital_address",
       headerName: "Hospital Address",
       // width: 500,
       flex: 1,
@@ -188,9 +188,10 @@ const PrescriptionsPage = () => {
         searchResults={prescriptions}
         columns={columns}
         navigateEnabled={true}
-        navigateTo={"/patient/prescriptions/view/"}
+        navigateTo={`/patient/prescriptions/view/`}
         sx={sx}
         isLoading={isLoading}
+        IdType={"appointment_id"}
       />
     </div>
   );

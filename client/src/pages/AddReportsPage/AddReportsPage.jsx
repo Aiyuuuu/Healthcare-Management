@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import styles from "./AddReportsPage.module.css";
 import { showToast } from "../../components/ToastNotification/Toast";
 
 const AddReportsPage = () => {
   const [patientId, setPatientId] = useState("");
+  const [reportTitle, setReportTitle] = useState("");
+  const [feePaid, setFeePaid] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -13,36 +15,60 @@ const AddReportsPage = () => {
       setSelectedFile(e.target.files[0]);
     }
   };
-
   const handleUpload = async () => {
-    // Validate patientId and file presence
     if (!patientId.trim()) {
       showToast("error", "Please enter a valid patient ID.");
+      return;
+    }
+    if (!reportTitle.trim()) {
+      showToast("error", "Please enter a report title.");
       return;
     }
     if (!selectedFile) {
       showToast("error", "Please select a PDF report to upload.");
       return;
     }
-    // Validate file type (PDF)
     if (selectedFile.type !== "application/pdf") {
       showToast("error", "Only PDF files are allowed.");
       return;
     }
-
-    const formData = new FormData();
-    formData.append("report", selectedFile);
-
+    
+    const feeValue = parseInt(feePaid);
+    if (isNaN(feeValue) || feeValue <= 0) {
+      showToast("error", "Please enter a valid fee amount in PKR.");
+      return;
+    }
+  
     setUploading(true);
+  
     try {
-      await axios.post(`/doctor/addReport/${patientId}/`, formData, {
+      // 1️⃣ First API: create metadata
+      const metadataRes = await api.post(`/api/reports/createReportEntry`, {
+        patientId: patientId.trim(),
+        title: reportTitle.trim(),
+        feePaid: feeValue,
+      });
+  
+      const { reportId } = metadataRes.data;
+      if (!reportId) {
+        throw new Error("No reportId returned from server.");
+      }
+  
+      // 2️⃣ Second API: upload file
+      const formData = new FormData();
+      formData.append("pdf", selectedFile);
+  
+      await api.post(`/api/reports/uploadReport/${reportId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+  
       showToast("success", "Report uploaded successfully.");
-      // Optionally reset fields or navigate away
+  
+      // Reset form after success
       setPatientId("");
+      setReportTitle("");
+      setFeePaid("");
       setSelectedFile(null);
-      // navigate("/some-success-page"); // Uncomment if needed
     } catch (err) {
       console.error("Upload error:", err);
       const errorMsg =
@@ -53,7 +79,7 @@ const AddReportsPage = () => {
       setUploading(false);
     }
   };
-
+  
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Add Report</h1>
@@ -68,6 +94,34 @@ const AddReportsPage = () => {
           placeholder="Enter patient ID"
           value={patientId}
           onChange={(e) => setPatientId(e.target.value)}
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="reportTitle" className={styles.label}>
+          Report Title
+        </label>
+        <input
+          type="text"
+          id="reportTitle"
+          className={styles.input}
+          placeholder="Enter report title"
+          value={reportTitle}
+          onChange={(e) => setReportTitle(e.target.value)}
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="feePaid" className={styles.label}>
+          Fee Paid (PKR)
+        </label>
+        <input
+          type="number"
+          id="feePaid"
+          className={styles.input}
+          placeholder="Enter fee amount"
+          step="1"
+          min="0"
+          value={feePaid}
+          onChange={(e) => setFeePaid(e.target.value)}
         />
       </div>
       <div className={styles.formGroup}>

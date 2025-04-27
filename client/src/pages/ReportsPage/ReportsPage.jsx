@@ -5,9 +5,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import useAuthContext from "../../hooks/useAuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/ToastNotification/Toast";
+import api from '../../services/api'
 
 
 
@@ -45,7 +45,7 @@ const ReportsPage = () => {
           setIsLoading(true);
           try {
             console.log(patientId);
-            const response = await axios.get(`/patient/getReports/${patientId}`);
+            const response = await api.get(`/api/reports/patient`);
             // Ensure API returns a valid data structure
             let reportData = response.data.data;
             if (!Array.isArray(reportData)) {
@@ -97,14 +97,14 @@ const ReportsPage = () => {
 
   const columns = [
     {
-      field: "id",
+      field: "report_id",
       headerName: "Report ID",
       width: 150,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "title",
+      field: "report_title",
       headerName: "Report Title",
       width: 300,
       headerClassName: styles.headers,
@@ -125,21 +125,21 @@ const ReportsPage = () => {
       disableColumnMenu: true,
     },
     {
-      field: "patientName",
+      field: "patient_name",
       headerName: "Patient Name",
       width: 180,
       headerClassName: styles.headers,
       cellClassName: "columnPatient",
     },
     {
-      field: "fee",
+      field: "fee_paid",
       headerName: "Fee Paid",
       width: 120,
       headerClassName: styles.headers,
       disableColumnMenu: true,
     },
     {
-      field: "hospitalAddress",
+      field: "hospital_address",
       headerName: "Hospital Address",
       // width: 500,
       flex: 1,
@@ -194,7 +194,7 @@ const ReportsPage = () => {
   const downloadReport = async (params) => {
     try {
         showToast('info',"downloading")
-      const response = await axios.get(`/patient/${patientId}/downloadReport/${params.row.id}`, {
+      const response = await api.get(`/api/reports/download/${params.row.report_id}`, {
         responseType: "blob", // Important for handling file downloads
       });
   
@@ -242,6 +242,7 @@ const ReportsPage = () => {
         navigateTo={"/reports/download/"}
         sx={sx}
         isLoading={isLoading}
+        IdType = {"report_id"}
       />
     </div>
   );

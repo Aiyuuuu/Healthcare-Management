@@ -8,7 +8,7 @@ const pool = require('./config/db');
 // Initialize Express app
 const app = express();
 
-// ======================
+// ====================== 
 //  Security Middlewares
 // ======================
 app.use(helmet()); // Set secure HTTP headers
@@ -38,18 +38,6 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// ======================
-//  Database Connection
-// ======================
-// Verify database connection on startup
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error('❌ Database connection failed:', err.message);
-    process.exit(1);
-  }
-  console.log('✅ Database connected successfully');
-  connection.release();
-});
 
 // ======================
 //  Scheduled Tasks

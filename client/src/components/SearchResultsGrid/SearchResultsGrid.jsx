@@ -36,7 +36,7 @@ function SearchResultsGrid({
         disableRowSelectionOnClick
         onRowClick={(params) => {if(onRowClick){onRowClick(params)}
         else if (navigateEnabled) {
-            navigate(`${navigateTo}${params.row.doctor_id}`);
+            navigate(`${navigateTo}${params.row[IdType]}`);
           }
         }}
         slots={{

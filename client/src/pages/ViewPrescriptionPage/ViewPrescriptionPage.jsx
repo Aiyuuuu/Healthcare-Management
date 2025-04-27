@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useAuthContext from "../../hooks/useAuthContext";
-import axios from "axios";
+import api from '../../services/api';
 import {
   Box,
   Typography,
@@ -23,33 +23,6 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import MedicationIcon from "@mui/icons-material/Medication";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import styles from "./ViewPrescriptionPage.module.css";
-import { styled } from "@mui/material/styles";
-
-const PrescriptionContainer = styled(Paper)(() => ({
-  borderRadius: "24px",
-  padding: "40px",
-  maxWidth: "1200px",
-  margin: "40px auto",
-  boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.08)",
-  background: "linear-gradient(145deg, #f8fff0 0%, #ffffff 100%)",
-}));
-
-const ProgressBar = styled(LinearProgress)(() => ({
-  height: 12,
-  borderRadius: 6,
-  margin: "20px 0",
-  "& .MuiLinearProgress-bar": {
-    borderRadius: 6,
-    backgroundColor: "#566129",
-  },
-}));
-
-const SectionCard = styled(Paper)(() => ({
-  padding: "24px",
-  borderRadius: "16px",
-  boxShadow: "0px 8px 16px rgba(86, 97, 41, 0.1)",
-  backgroundColor: "rgba(86, 97, 41, 0.03)",
-}));
 
 const ViewPrescriptionPage = () => {
   const { user } = useAuthContext();
@@ -58,8 +31,6 @@ const ViewPrescriptionPage = () => {
   const [loading, setLoading] = useState(true);
   const [prescription, setPrescription] = useState(null);
   const [progress, setProgress] = useState(0);
-
-  // const themeColor = '#566129';
 
   const calculateProgress = (startDate, endDate) => {
     const start = new Date(startDate).getTime();
@@ -73,17 +44,16 @@ const ViewPrescriptionPage = () => {
   const fetchPrescription = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `/patient/${user?.id}/getPrescription/${id}/`
-      );
-      setPrescription(response.data);
-      setProgress(calculateProgress(response.data.date, response.data.endDate));
+      const response = await api.get(`/api/prescriptions/appointment/${id}`);
+      console.log(response.data.data);
+      setPrescription(response.data.data);
+      setProgress(calculateProgress(response.data.data.prescription_date, response.data.data.end_date));
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [id, user?.id]);
+  }, [id]);
 
   useEffect(() => {
     if (!user) navigate("/login");
@@ -118,8 +88,8 @@ const ViewPrescriptionPage = () => {
 
               <Box className={styles.progressSection}>
                 <Typography variant="h6" className={styles.dates}>
-                  {formatDate(prescription.date)} -{" "}
-                  {formatDate(prescription.endDate)}
+                  {formatDate(prescription.prescription_date)} -{" "}
+                  {formatDate(prescription.end_date)}
                 </Typography>
                 <LinearProgress
                   variant="determinate"
@@ -146,22 +116,22 @@ const ViewPrescriptionPage = () => {
                   <DetailItem
                     icon={<EventIcon />}
                     label="Date"
-                    value={formatDate(prescription.date)}
+                    value={formatDate(prescription.prescription_date)}
                   />
                   <DetailItem
                     icon={<AccessTimeIcon />}
                     label="Time"
-                    value={prescription.time}
+                    value={prescription.prescription_time}
                   />
                   <DetailItem
                     icon={<Avatar className={styles.avatar}>D</Avatar>}
                     label="Doctor"
-                    value={prescription.doctorName}
+                    value={prescription.doctor_name}
                   />
                   <DetailItem
                     icon={<LocalHospitalIcon />}
                     label="Hospital"
-                    value={prescription.hospitalAddress}
+                    value={prescription.hospital_address}
                   />
                 </Paper>
               </Grid>
@@ -176,7 +146,7 @@ const ViewPrescriptionPage = () => {
                   </Box>
 
                   <List disablePadding className={styles.medicationList}>
-                    {prescription.prescriptionDetails.map((med, index) => (
+                    {prescription.medicines.map((med, index) => (
                       <div key={index}>
                         <ListItem className={styles.medicationItem}>
                           <ListItemText
@@ -201,13 +171,12 @@ const ViewPrescriptionPage = () => {
                               </Box>
                             }
                             slotProps={{
-                              primary: { component: 'span' },
-                              secondary: { component: 'span' }
+                              primary: { component: "span" },
+                              secondary: { component: "span" },
                             }}
                           />
                         </ListItem>
-                        {index <
-                          prescription.prescriptionDetails.length - 1 && (
+                        {index < prescription.medicines.length - 1 && (
                           <Divider className={styles.divider} />
                         )}
                       </div>
@@ -216,8 +185,8 @@ const ViewPrescriptionPage = () => {
                 </Paper>
               </Grid>
 
-              {prescription.sideNote && (
-                <Grid grid={{ xs: 12 }}>
+              {prescription.special_instructions && (
+                <Grid grid={{ xs: 12}}>
                   <Paper
                     className={`${styles.sectionCard} ${styles.specialInstructions}`}
                   >
@@ -228,7 +197,7 @@ const ViewPrescriptionPage = () => {
                       </Typography>
                     </Box>
                     <Typography className={styles.sideNoteText}>
-                      {prescription.sideNote}
+                      {prescription.special_instructions}
                     </Typography>
                   </Paper>
                 </Grid>

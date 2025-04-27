@@ -44,11 +44,24 @@ class Prescription {
 
   static async findByPatientId(patientId) {
     const [rows] = await pool.query(
-      `SELECT pr.*, a.appointment_date, a.appointment_time, d.doctor_name 
-       FROM prescriptions pr 
-       JOIN appointments a ON pr.appointment_id = a.appointment_id
-       JOIN doctors d ON a.doctor_id = d.doctor_id
-       WHERE a.patient_id = ?`,
+      `
+      SELECT
+        pr.prescription_id,
+        pr.appointment_id,
+        d.doctor_name,
+        pr.prescription_date,
+        pr.prescription_time,
+        pr.duration,
+        pr.end_date,
+        d.hospital_address
+      FROM prescriptions AS pr
+      JOIN appointments AS a
+        ON pr.appointment_id = a.appointment_id
+      JOIN doctors AS d
+        ON a.doctor_id = d.doctor_id
+      WHERE a.patient_id = ?
+      ORDER BY pr.prescription_date DESC, pr.prescription_time DESC
+      `,
       [patientId]
     );
     return rows;

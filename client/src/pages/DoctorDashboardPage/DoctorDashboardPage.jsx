@@ -25,6 +25,7 @@ const DoctorDashboardPage = () => {
   const navigate = useNavigate();
   const today = new Date();
   const isWeekend = [0, 6].includes(today.getDay());
+  const dev = true;
 
   const fetchAppointments = useCallback(async () => {
     try {
@@ -236,7 +237,7 @@ const DoctorDashboardPage = () => {
         >
           <FiFilePlus /> Add Report
         </button>
-        {!isWeekend && (
+        {!(isWeekend && !dev) && (
           <button className={styles.iconButton}>
             <FiMessageSquare /> Chat
           </button>
@@ -244,14 +245,14 @@ const DoctorDashboardPage = () => {
       </div>
 
       <div className={styles.mainContent}>
-        {isWeekend && (
+        {(isWeekend && !dev) && (
           <div className={styles.holidayOverlay}>
             <h2 className={styles.holidayTitle}>🎉 Holiday!</h2>
             <p>Enjoy the day off!</p>
           </div>
         )}
 
-        {!isWeekend && (
+        {!(isWeekend && !dev) && (
           <div className={styles.todaysScheduleSection}>
             <div className={styles.sectionHeader}>
               <FiCalendar />

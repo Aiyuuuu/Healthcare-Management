@@ -36,6 +36,7 @@ button {
 }
 button:hover {
     background-color: #475322;
+    color: white !important;
 }
 .toggle-link {
     color: #566129;

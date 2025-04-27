@@ -16,13 +16,13 @@ router.get('/appointment/:appointmentId',
 );
 
 // Patient views their prescriptions
-router.get('/patient/:patientId', 
+router.get('/patient', 
   authMiddleware('patient'), 
-  prescriptionController.getPrescriptionsByPatient
+  prescriptionController.getPrescriptionsListByPatient
 );
 
 // Doctor views their prescriptions
-router.get('/doctor/:doctorId', 
+router.get('/doctor', 
   authMiddleware('doctor'), 
   prescriptionController.getPrescriptionsByDoctor
 );
