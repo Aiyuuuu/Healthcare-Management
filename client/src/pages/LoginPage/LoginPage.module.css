@@ -40,9 +40,13 @@ button:hover {
 }
 .toggle-link {
     color: #566129;
-    cursor: pointer;
+    cursor: pointer !important;
     margin-top: 10px;
     display: block;
+}
+
+.toggle-link:hover {
+    cursor: pointer !important;
 }
 
 
