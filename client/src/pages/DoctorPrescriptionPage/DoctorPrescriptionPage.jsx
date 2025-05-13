@@ -79,6 +79,7 @@ const DoctorPrescriptionPage = () => {
         });
     
         setPrescription({
+          appointment_id: apptId,
           medicines: [],
           special_instructions: "",
           hospital_address: "",
@@ -102,7 +103,7 @@ const DoctorPrescriptionPage = () => {
       const payload = {
         ...prescription
       };
-
+ 
       const isUpdate = !!prescription.prescription_id;
     
       if (isUpdate) {

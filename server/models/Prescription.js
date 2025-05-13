@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 class Prescription {
   static async create(prescriptionData) {
-    const { prescription_date, prescription_time, medicines, special_instructions } = prescriptionData;
+    const { appointment_id, prescription_date, prescription_time, medicines, special_instructions } = prescriptionData;
     const [result] = await pool.query(
       'INSERT INTO prescriptions (appointment_id, prescription_date, prescription_time, medicines, special_instructions) VALUES (?, ?, ?, ?, ?)',
       [appointment_id, prescription_date, prescription_time, JSON.stringify(medicines), special_instructions]
