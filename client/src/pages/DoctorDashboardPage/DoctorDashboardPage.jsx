@@ -155,7 +155,7 @@ const DoctorDashboardPage = () => {
                       Cancel
                     </button>
                     <button
-                      onClick={() => handleAction("complete", appt.appointment_id)}
+                      onClick={() => handleAction("completed", appt.appointment_id)}
                       className={styles.completeBtn}
                     >
                       Complete
